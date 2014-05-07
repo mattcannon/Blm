@@ -1,0 +1,25 @@
+{
+    "name": "mattcannon/rightmove",
+    "description": "Rightmove BLM Parser",
+    "require": {
+        "monolog/monolog": "1.*",
+        "illuminate/support": "4.1.*",
+        "php": ">=5.4.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Matt Cannon",
+            "email": "matt@mattcannon.co.uk"
+        }
+    ],
+    "autoload" :{
+        "psr-4":{
+            "mattcannon\\" : "src/mattcannon/"
+        }
+    },
+    "minimum-stability": "stable",
+    "require-dev": {
+        "phpunit/phpunit": "4.1.*"
+    }
+}

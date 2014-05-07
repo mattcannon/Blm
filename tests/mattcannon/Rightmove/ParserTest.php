@@ -1,0 +1,113 @@
+<?php
+require '../../Base.php';
+use mattcannon\Rightmove\Parser;
+
+/**
+ * Created by PhpStorm.
+ * User: matt
+ * Date: 07/05/2014
+ * Time: 22:31
+ */
+
+class ParserTest extends Base{
+    /**
+     * @var mattcannon\Rightmove\Parser;
+     */
+    protected $parser;
+    protected $validDocument;
+
+
+
+
+
+    public function setUp()
+    {
+        $this->parser = new Parser('testPath');
+
+        $this->testClass = $this->parser;
+        parent::setUp();
+        $this->validDocument = <<<BLM
+#HEADER#
+VERSION : 3i
+EOF : '|'
+EOR : '~'
+
+#DEFINITION#
+AGENT_REF|HOUSE_NAME_NUMBER|STREET_NAME|OS_TOWN_CITY|OS_REGION|ZIPCODE|COUNTRY_CODE|FEATURE1|FEATURE2|FEATURE3|FEATURE4|FEATURE5|FEATURE6|FEATURE7|FEATURE8|FEATURE9|FEATURE10|SUMMARY|DESCRIPTION|CREATE_DATE|UPDATE_DATE|BRANCH_ID|STATUS_ID|BEDROOMS|PRICE|PRICE_QUALIFIER|NEW_HOME_FLAG|PROP_SUB_ID|DISPLAY_ADDRESS|PUBLISHED_FLAG|LET_DATE_AVAILABLE|LET_BOND|LET_TYPE_ID|LET_FURN_ID|LET_RENT_FREQUENCY|TRANS_TYPE_ID|DEVELOPMENT_NAME|MEDIA_IMAGE_00|MEDIA_IMAGE_01|MEDIA_IMAGE_02|MEDIA_IMAGE_03|MEDIA_IMAGE_04|MEDIA_IMAGE_05|MEDIA_IMAGE_06|MEDIA_IMAGE_07|MEDIA_IMAGE_08|MEDIA_IMAGE_09|MEDIA_VIRTUAL_TOUR_00|~
+
+#DATA#
+37565_1160298|Panorama Beach |Sunny Beach |NESSEBAR|BURGAS||BG|||||||||||A fully furnished studio apartment in the Panorama Beach complex benefiting from on site facilities including restaurant and bar, spa, supermarket, banks, separate swimming pools for adults and chi...|A fully furnished studio apartment in the Panorama Beach complex benefiting from on site facilities including restaurant and bar, spa, supermarket, banks, separate swimming pools for adults and children and 24 hour security. Further benefits include South Coast beach situated just 200 metres away and Burgas International Airport is approximately 23km away.<br/> <BR><BR><B>FEATURES</B><BR><BR><LI>WIDE CHOICE OF SHOPS & RESTAURANTS<LI>ONE OF THE OLDEST TOWNS IN EUROPE<LI>OLD TOWN IS PROTECTED AS A UNESCO WORLD HERITAGE SITE<LI>MOST FAVOURED BY TOURISTS ON THE SOUTHERN COAST<LI>NESSEBAR BOASTS FOUR MILES OF GOLDEN SANDY BEACHES WITH BLUE FLAG AWARD STATUS<BR><BR><br><br><p><b>Lounge/Bedroom:</b><br>laminate flooring, painted walls,air conditioning unit, PVC joinery.<br/></p><p><b>Kitchen:</b><br>laminate flooring, painted walls, tap with a counter, inside doors MDF, front/entrance doors - MDF, option for cable television and one telephone.<br/></p><p><b>Bathroom:</b><br>terracotta flooring, tiled walls, low level WC, wash hand basin with mixer tap, shower cubicle, electric boiler.<br/></p><p><b>Terrace:</b><br>approx 6.72 square metres, roof terrace/garden overlooking ocean and swimming pool.<br/></p>|2008-03-16 21:29:36|2008-03-15 16:28:36|37565|0|0|53,366||N|8|Panorama Beach  ,Sunny Beach  ,Nessebar ,Burgas ,Bulgaria|1|||0|2||1||37565_1160298_IMG_00.jpg|37565_1160298_IMG_01.jpg|37565_1160298_IMG_02.jpg|||||||||~
+#END#
+BLM;
+
+    }
+    public function tearDown()
+    {
+        unset($this->parser);
+        parent::tearDown();
+    }
+    public function testCanConstructParser()
+    {
+        $parser = new Parser('withPath');
+        $this->assertTrue(get_class($parser)=='mattcannon\Rightmove\Parser');
+    }
+
+    public function testCanSetPathCorrectly()
+    {
+        $parser = new Parser('withPath');
+        $this->assertTrue($parser->getFilePath() == 'withPath');
+    }
+
+    public function testCanParseHeaderVersion()
+    {
+        $this->parser->parseHeader($this->validDocument);
+        $version = $this->getProperty("version");
+        $this->assertTrue(isset($version),'version should be set');
+    }
+
+
+    public function testCanParseHeaderEOR()
+    {
+        $this->parser->parseHeader($this->validDocument);
+        $version = $this->getProperty("eor");
+        $this->assertTrue(isset($version),'eor should be set');
+    }
+    public function testCanParseHeaderEOF()
+    {
+        $this->parser->parseHeader($this->validDocument);
+        $version = $this->getProperty("eof");
+        $this->assertTrue(isset($version),'eof should be set');
+    }
+
+    public function testCanParseFields()
+    {
+        $this->setProperty('eof','|');
+        $this->setProperty('eor','~');
+        $result = $this->parser->parseFields($this->validDocument);
+        $this->assertTrue(sizeof($result)==48);
+    }
+
+    public function testCanParseData()
+    {
+        $this->setProperty('eof','|');
+        $this->setProperty('eor','~');
+        $headers = array();
+        for($i=0;$i<48;$i++){
+            $headers[] = $i;
+        }
+        $result = $this->parser->parseData($this->validDocument,$headers);
+        $this->assertTrue(sizeof($result)==1);
+    }
+
+    public function testCanParseFile()
+    {
+
+        $oClass = $this->getMock('mattcannon\Rightmove\Parser', array('getBlmFileContents'),array('./testPath'));
+        $oClass->expects($this->any())->method('getBlmFileContents')->will($this->returnValue($this->validDocument));
+        $result = $oClass->parseFile();
+        $this->assertTrue(sizeof($result)==1);
+       // var_dump($result->first());
+    }
+
+
+}
