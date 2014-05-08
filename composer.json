@@ -2,9 +2,10 @@
     "name": "mattcannon/rightmove",
     "description": "Rightmove BLM Parser",
     "require": {
-        "monolog/monolog": "1.*",
+
         "illuminate/support": "4.1.*",
-        "php": ">=5.4.0"
+        "php": ">=5.4.0",
+        "psr/log": "1.0.*"
     },
     "license": "MIT",
     "authors": [
@@ -25,6 +26,7 @@
     },
     "minimum-stability": "stable",
     "require-dev": {
-        "phpunit/phpunit": "4.1.*"
+        "phpunit/phpunit": "4.1.*",
+        "monolog/monolog": "1.*"
     }
 }
