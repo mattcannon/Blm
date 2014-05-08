@@ -60,7 +60,7 @@ class PropertyObject implements \JsonSerializable
      * @param string $key
      * @param mixed  $value
      */
-    public function __set($key,$value)
+    public function __set($key, $value)
     {
         $this->attributes[$key] = $value;
     }
@@ -73,13 +73,18 @@ class PropertyObject implements \JsonSerializable
     {
         //gets feature keys if already calculated, otherwise calculates them.
         if (!isset($this->internal['features'])) {
-            $featureKeys = array_filter(array_keys($this->attributes),function (&$element) {
-                    return (strpos($element,'feature')===0);
-                });
+            $featureKeys = array_filter(array_keys($this->attributes), function (&$element) {
+                    return (strpos($element, 'feature')===0);
+            });
             $this->internal['features'] = $featureKeys;
         }
         //returns a collection of all non-blank feature properties as a Collection.
-        return  Collection::make(array_filter(array_intersect_key($this->attributes,array_flip($this->internal['features']))));
+        return  Collection::make(array_filter(
+            array_intersect_key(
+                $this->attributes,
+                array_flip($this->internal['features'])
+            )
+        ));
     }
 
     /**
@@ -91,13 +96,18 @@ class PropertyObject implements \JsonSerializable
         //gets image keys if already calculated, otherwise calculates them.
 
         if (!isset($this->internal['images'])) {
-            $imageKeys = array_filter(array_keys($this->attributes),function (&$element) {
-                    return (strpos($element,'mediaImage')===0);
-                });
+            $imageKeys = array_filter(array_keys($this->attributes), function (&$element) {
+                    return (strpos($element, 'mediaImage')===0);
+            });
             $this->internal['images'] = $imageKeys;
         }
         //returns a collection of all non-blank image properties as a Collection.
-        return  Collection::make(array_filter(array_intersect_key($this->attributes,array_flip($this->internal['images']))));
+        return  Collection::make(array_filter(
+            array_intersect_key(
+                $this->attributes,
+                array_flip($this->internal['images'])
+            )
+        ));
     }
     /**
      * (PHP 5 &gt;= 5.4.0)<br/>
@@ -112,6 +122,6 @@ class PropertyObject implements \JsonSerializable
         $features = $this->features;
         $images = $this->images;
 
-        return compact('property','features','images');
+        return compact('property', 'features', 'images');
     }
 }
