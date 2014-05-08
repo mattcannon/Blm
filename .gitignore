@@ -3,3 +3,4 @@ composer.lock
 index.php
 *.blm
 .idea/*
+*.log

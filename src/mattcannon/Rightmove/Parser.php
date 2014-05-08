@@ -83,16 +83,20 @@ class Parser implements LoggerAwareInterface
     public function parseFile()
     {
         // Gets content of the BLM file.
+        $this->logger->debug('Getting contents of BLM file.',['filePath'=>$this->filePath]);
         $fileContents = $this->getBlmFileContents();
         //Parses the header of the BLM file, and sets the version,eof, and eor instance variables for the parser.
+        $this->logger->debug('Parsing header of BLM file.',['filePath'=>$this->filePath]);
         $this->parseHeader($fileContents);
 
         //Gets the titles from the field definitions
         /** @var array $fieldTitles */
+        $this->logger->debug('Parsing field titles of BLM file.',['filePath'=>$this->filePath]);
         $fieldTitles = $this->parseFields($fileContents);
 
         //Gets the property data from the Data section, and combines it with the field titles.
         /** @var \Illuminate\Support\Collection $properties */
+        $this->logger->debug('Parsing properties in BLM file.',['filePath'=>$this->filePath]);
         $properties = $this->parseData($fileContents,$fieldTitles);
 
         return $properties;
@@ -115,6 +119,12 @@ class Parser implements LoggerAwareInterface
         //remove the last row from the array, as it will be empty
         array_pop($rows);
 
+        $this->logger->debug('Parsed rows for data',[
+                'offset start'=>$dataStartOffset,
+                'offset finish'=>$dataEndOffset,
+                'EoR delimiter'=>$this->eor,
+                'rows found'=>sizeof($rows)
+            ]);
         //loop over the array, and parse the rows.
         for ($i = 0;$i<sizeof($rows);$i++) {
             $rows[$i] = $this->parseRow(trim($rows[$i]));
@@ -124,9 +134,11 @@ class Parser implements LoggerAwareInterface
         $finalRows = array();
         foreach ($rows as $row) {
             if (sizeof($row) !== sizeof($fieldTitles)) {
+                $this->logger->critical('BLM file definition mismatch',['file'=>$this->filePath,'property'=>$row[0],'expected field count'=>sizeof($fieldTitles),'actual size'=>sizeof($row)]);
                 throw new InvalidBLMException('Property with ID:' . $row[0] . ' contains a different number of fields, than the header definition. BLM:' . $this->filePath . ' is invalde');
             }
             $finalRows[] = new PropertyObject(array_combine($fieldTitles,$row));
+            $this->logger->debug('Created property object',['property reference'=>$row[0]]);
         }
         $collection = new Collection($finalRows);
 
@@ -140,7 +152,9 @@ class Parser implements LoggerAwareInterface
      */
     public function parseRow($row)
     {
-        return explode($this->eof,substr($row,0,-1));
+        $result = explode($this->eof,substr($row,0,-1));
+        $this->logger->debug('Parsed row.',['fieldCount'=>sizeof($result),'property'=>$result[0]]);
+        return $result;
     }
 
     /**
