@@ -56,10 +56,22 @@ class Parser implements LoggerAwareInterface
         $this->filePath = $filePath;
         $this->logger = new NullLogger();
     }
-    public function getFilePath(){
+
+    /**
+     * @return null|string
+     */
+    public function getFilePath()
+    {
         return $this->filePath;
     }
-    protected function getBlmFileContents(){
+
+    /**
+     * returns contents of blm file.
+     * @return string
+     * @codeCoverageIgnore
+     */
+    protected function getBlmFileContents()
+    {
         return implode('',file($this->filePath));
     }
     /**
@@ -112,7 +124,7 @@ class Parser implements LoggerAwareInterface
         $finalRows = array();
         foreach ($rows as $row) {
             if (sizeof($row) !== sizeof($fieldTitles)) {
-                throw InvalidBLMException('Property with ID:' . $row[0] . ' contains a different number of fields, than the header definition. BLM:' . $this->filePath . ' is invalde');
+                throw new InvalidBLMException('Property with ID:' . $row[0] . ' contains a different number of fields, than the header definition. BLM:' . $this->filePath . ' is invalde');
             }
             $finalRows[] = new PropertyObject(array_combine($fieldTitles,$row));
         }
@@ -203,6 +215,7 @@ class Parser implements LoggerAwareInterface
      *
      * @param  LoggerInterface $logger
      * @return null
+     * @codeCoverageIgnore
      */
     public function setLogger(LoggerInterface $logger)
     {

@@ -1,5 +1,4 @@
 <?php
-require '../../Base.php';
 use mattcannon\Rightmove\Parser;
 
 /**
@@ -9,16 +8,13 @@ use mattcannon\Rightmove\Parser;
  * Time: 22:31
  */
 
-class ParserTest extends Base{
+class ParserTest extends Base
+{
     /**
      * @var mattcannon\Rightmove\Parser;
      */
     protected $parser;
     protected $validDocument;
-
-
-
-
 
     public function setUp()
     {
@@ -65,7 +61,6 @@ BLM;
         $this->assertTrue(isset($version),'version should be set');
     }
 
-
     public function testCanParseHeaderEOR()
     {
         $this->parser->parseHeader($this->validDocument);
@@ -77,6 +72,34 @@ BLM;
         $this->parser->parseHeader($this->validDocument);
         $version = $this->getProperty("eof");
         $this->assertTrue(isset($version),'eof should be set');
+    }
+
+    /**
+     * @expectedException mattcannon\Rightmove\Exceptions\InvalidBLMException
+     */
+    public function testDoesThrowExceptionForMissingVersion()
+    {
+        $document = $this->validDocument;
+        $document = str_replace('VERSION','vers',$document);
+        $this->parser->parseHeader($document);
+    }
+    /**
+     * @expectedException mattcannon\Rightmove\Exceptions\InvalidBLMException
+     */
+    public function testDoesThrowExceptionForMissingEor()
+    {
+        $document = $this->validDocument;
+        $document = str_replace('EOR','sub',$document);
+        $this->parser->parseHeader($document);
+    }
+    /**
+     * @expectedException mattcannon\Rightmove\Exceptions\InvalidBLMException
+     */
+    public function testDoesThrowExceptionForMissingEof()
+    {
+        $document = $this->validDocument;
+        $document = str_replace('EOF','sub',$document);
+        $this->parser->parseHeader($document);
     }
 
     public function testCanParseFields()
@@ -92,7 +115,7 @@ BLM;
         $this->setProperty('eof','|');
         $this->setProperty('eor','~');
         $headers = array();
-        for($i=0;$i<48;$i++){
+        for ($i=0;$i<48;$i++) {
             $headers[] = $i;
         }
         $result = $this->parser->parseData($this->validDocument,$headers);
@@ -109,5 +132,18 @@ BLM;
        // var_dump($result->first());
     }
 
+    /**
+     * @expectedException mattcannon\Rightmove\Exceptions\InvalidBLMException
+     */
+    public function testDoesThrowExceptionForFieldCountMismatch()
+    {
+        $this->setProperty('eof','|');
+        $this->setProperty('eor','~');
+        $headers = array();
+        for ($i=0;$i<46;$i++) {
+            $headers[] = $i;
+        }
+        $this->parser->parseData($this->validDocument,$headers);
+    }
 
 }

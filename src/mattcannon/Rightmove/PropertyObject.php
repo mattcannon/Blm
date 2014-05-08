@@ -33,14 +33,14 @@ class PropertyObject implements \JsonSerializable
      * Create a new PropertyObject
      * @param array $attributes
      */
-    public function __construct(array $attributes)
+    public function __construct(array $attributes = [])
     {
         $this->attributes = $attributes;
     }
 
     /**
      * Magic method, to allow getting values of pseudo-properties from different sources.
-     * @param $key
+     * @param  string $key
      * @return mixed
      */
     public function __get($key)
@@ -57,8 +57,8 @@ class PropertyObject implements \JsonSerializable
 
     /**
      * Magic method, to allow setting values of pseudo-properties from different sources.
-     * @param $key
-     * @param $value
+     * @param string $key
+     * @param mixed  $value
      */
     public function __set($key,$value)
     {
