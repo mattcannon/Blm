@@ -19,6 +19,8 @@ class PropertyObjectTest extends Base
             'mediaImage02'=>'image2',
             'mediaImage03'=>'image3',
             'mediaImage04'=>'',
+            'mediaImage60'=>'epc',
+            'mediaImageText60'=>'EPC',
             'feature1'=>'feature1',
             'feature2'=>'feature2',
             'feature3'=>'',
@@ -70,7 +72,7 @@ class PropertyObjectTest extends Base
     public function testCanGetDataAsJson()
     {
         $result = json_decode(json_encode($this->testClass),true);
-        $this->assertEquals(3,sizeof($result));
+        $this->assertEquals(4,sizeof($result));
 
     }
 
