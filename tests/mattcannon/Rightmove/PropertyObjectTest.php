@@ -70,7 +70,7 @@ class PropertyObjectTest extends Base
     public function testCanGetDataAsJson()
     {
         $result = json_decode(json_encode($this->testClass),true);
-        $this->assertEquals(3,sizeof($result));
+        $this->assertEquals(4,sizeof($result));
 
     }
 
