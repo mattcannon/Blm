@@ -27,7 +27,7 @@ class PropertyObject implements \JsonSerializable
      * Internal cache of feature/image keys
      * @var array
      */
-    private $internal = array('features'=>null,'images'=>null);
+    private $internal = array('features'=>null,'images'=>null,'epcs'=>null);
 
     /**
      * Create a new PropertyObject
@@ -50,6 +50,8 @@ class PropertyObject implements \JsonSerializable
                 return $this->getFeatures();
             case 'images':
                 return $this->getImages();
+            case 'epcs':
+                return $this->getEpcEntries();
             default:
                 return $this->attributes[$key];
         }
@@ -109,6 +111,30 @@ class PropertyObject implements \JsonSerializable
             )
         ));
     }
+    public function getEpcEntries(){
+        //gets image keys if already calculated, otherwise calculates them.
+
+        if (!isset($this->internal['images'])) {
+            $imageKeys = array_filter(array_keys($this->attributes), function (&$element) {
+                    return (strpos($element, 'mediaImage')===0);
+                });
+            $this->internal['images'] = $imageKeys;
+        }
+        $keyIntersects = array_intersect_key(
+            $this->attributes,
+            array_flip($this->internal['images'])
+        );
+        //returns a collection of all non-blank image properties as a Collection.
+        $this->filterArrayToEpcEntries($keyIntersects);
+        return  Collection::make($keyIntersects);
+    }
+    private function filterArrayToEpcEntries(array &$entries){
+        foreach($entries as $key => $value){
+            if($value == false || (preg_match('/mediaImage6/',$key)+preg_match('/mediaImageText6/',$key)<1)){
+                unset($entries[$key]);
+            }
+        }
+    }
     /**
      * (PHP 5 &gt;= 5.4.0)<br/>
      * Specify data which should be serialized to JSON
@@ -121,7 +147,8 @@ class PropertyObject implements \JsonSerializable
         $property = $this->attributes;
         $features = $this->features;
         $images = $this->images;
+        $epcs = $this->epcs;
 
-        return compact('property', 'features', 'images');
+        return compact('property', 'features', 'images','epcs');
     }
 }
