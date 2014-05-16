@@ -46,7 +46,11 @@ class Parser implements LoggerAwareInterface
      * @var null|string
      */
     private $filePath;
-
+    /**
+     *
+     * @var string
+     */
+    private $fileContents;
     /**
      * Create a new parser object - expects a file path to a BLM.
      * @param null|string $filePath
@@ -72,7 +76,10 @@ class Parser implements LoggerAwareInterface
      */
     protected function getBlmFileContents()
     {
-        return implode('', file($this->filePath));
+        if(is_null($this->fileContents)){
+            $this->fileContents = implode('', file($this->filePath));
+        }
+        return $this->fileContents;
     }
     /**
      * Parses the BLM and returns a collection of PropertyObjects

@@ -99,7 +99,12 @@ class PropertyObject implements \JsonSerializable
 
         if (!isset($this->internal['images'])) {
             $imageKeys = array_filter(array_keys($this->attributes), function (&$element) {
-                    return (strpos($element, 'mediaImage')===0);
+                    $success = (strpos($element, 'mediaImage')===0); //test to confirm it is an image
+                    if($success) { //test to confirm it is not an epc.
+                        preg_match('!\d+!', $element, $matches);
+                        $success = $success && ($matches[0] < 60);
+                    }
+                    return $success;
             });
             $this->internal['images'] = $imageKeys;
         }
@@ -111,18 +116,23 @@ class PropertyObject implements \JsonSerializable
             )
         ));
     }
+
+    /**
+     * Get all non-empty epc properties as a collection
+     * @return Collection
+     */
     public function getEpcEntries(){
         //gets image keys if already calculated, otherwise calculates them.
 
-        if (!isset($this->internal['images'])) {
+        if (!isset($this->internal['epcs'])) {
             $imageKeys = array_filter(array_keys($this->attributes), function (&$element) {
                     return (strpos($element, 'mediaImage')===0);
                 });
-            $this->internal['images'] = $imageKeys;
+            $this->internal['epcs'] = $imageKeys;
         }
         $keyIntersects = array_intersect_key(
             $this->attributes,
-            array_flip($this->internal['images'])
+            array_flip($this->internal['epcs'])
         );
         //returns a collection of all non-blank image properties as a Collection.
         $this->filterArrayToEpcEntries($keyIntersects);

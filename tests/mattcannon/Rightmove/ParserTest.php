@@ -129,7 +129,6 @@ BLM;
         $oClass->expects($this->any())->method('getBlmFileContents')->will($this->returnValue($this->validDocument));
         $result = $oClass->parseFile();
         $this->assertTrue(sizeof($result)==1);
-       // var_dump($result->first());
     }
 
     /**
