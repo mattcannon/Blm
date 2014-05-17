@@ -4,4 +4,5 @@ index.php
 *.blm
 .idea/*
 *.log
+docs/*
 _site/*
