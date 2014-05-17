@@ -6,6 +6,7 @@ title: Parser - Public API documentation
 The public API for ```\mattcannon\Rightmove\Parser``` is defined in the ParserInterface.
 
 __namespace__: \mattcannon\Rightmove\interfaces
+
 #ParserInterface
 To use the parser you should create a new instance of the Parser class, then set the BLM contents, or pass in a file path to a BLM.
 To access the data in the BLM, you should call ```parseBlm()```.

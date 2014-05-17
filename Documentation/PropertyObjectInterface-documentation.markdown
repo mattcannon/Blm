@@ -5,7 +5,7 @@ title: PropertyObject - Public API documentation
 #Public API documentation
 The public API for ```\mattcannon\Rightmove\PropertyObject``` is defined in the PropertyObjectInterface.
 
-__namespace__:\mattcannon\Rightmove\Interfaces
+__namespace__: \mattcannon\Rightmove\Interfaces
 
 #PropertyObjectInterface
 This is a convenience object containing all of the standard rightmove fields, plus some additional convenience methods.
