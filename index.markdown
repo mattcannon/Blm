@@ -23,8 +23,8 @@ __This package is not yet available on [packagist.org](packagist.org), once cons
 ##Usage
 To use the rightmove parser, create a new instance of the Parser class, then either set the path of the rightmove file, or set the blm content to be parsed.
 you can then call `parseBlm()` on the instance - it will return a Collection of property objects.
-{% highlight php %} 
-<?php
+
+{% highlight php startinline %} 
 use mattcannon\Rightmove\Parser;
 $blmParser = new Parser();
 $blmParser->setBlmFile('/path/to/blm/file');
@@ -35,8 +35,7 @@ $collection = $blmParser->parseBlm();
 
 You can access the property attributes like so:
 
-{% highlight php %} 
-<?php
+{% highlight php startinline %} 
 $property = $collection->first();
 echo $property->displayAddress;
 echo $property->price;
