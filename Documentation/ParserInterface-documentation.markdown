@@ -3,7 +3,7 @@ layout: default
 title: Parser - Public API documentation
 ---
 #Public API documentation
-The public API for \mattcannon\Rightmove\Parser is defined in the ParserInterface
+The public API for ```\mattcannon\Rightmove\Parser``` is defined in the ParserInterface.
 
 __namespace__: \mattcannon\Rightmove\interfaces
 #ParserInterface
