@@ -80,9 +80,10 @@ class Parser implements ParserInterface
      */
     protected function getBlmFileContents()
     {
-        if(is_null($this->getBlmContents())){
+        if (is_null($this->getBlmContents())) {
             $this->blmContents = implode('', file($this->blmFilePath));
         }
+
         return $this->blmContents;
     }
     /**
@@ -95,10 +96,10 @@ class Parser implements ParserInterface
     public function parseBlm()
     {
         // Gets content of the BLM file.
-        if(is_null($this->getBlmContents())){
-            if(is_null($this->getBlmFilePath())){
+        if (is_null($this->getBlmContents())) {
+            if (is_null($this->getBlmFilePath())) {
                 throw new InvalidBLMException('No content received from BLM. you must either call $this->setBlmFilePath() or $this->setBlmContents()');
-            } else{
+            } else {
                 $this->logger->debug('Getting contents of BLM file.', ['filePath'=>$this->blmFilePath]);
                 $this->setBlmContents($this->getBlmFileContents());
             }
@@ -122,8 +123,8 @@ class Parser implements ParserInterface
 
     /**
      * get the Data section of the BLM, and convert it to a Collection of PropertyObjects
-     * @param  string              $fileContents
-     * @param  array               $fieldTitles
+     * @param  string                         $fileContents
+     * @param  array                          $fieldTitles
      * @return \Illuminate\Support\Collection
      * @throws InvalidBLMException
      */
@@ -264,7 +265,8 @@ class Parser implements ParserInterface
      * @param $blmContentString
      * @api
      */
-    public function setBlmContents($blmContentString){
+    public function setBlmContents($blmContentString)
+    {
         $this->blmContents = mb_convert_encoding($blmContentString,'UTF-8');
         $this->blmFilePath = null;
     }
@@ -274,7 +276,8 @@ class Parser implements ParserInterface
      * @param $filePath
      * @api
      */
-    public function setBlmFilePath($filePath){
+    public function setBlmFilePath($filePath)
+    {
         $this->blmFilePath = $filePath;
         $this->blmContents = null;
     }
@@ -283,7 +286,8 @@ class Parser implements ParserInterface
      * @return string|null
      * @api
      */
-    public function getBlmContents(){
+    public function getBlmContents()
+    {
         return $this->blmContents;
     }
     /**

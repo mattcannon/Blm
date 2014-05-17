@@ -16,7 +16,6 @@ namespace mattcannon\Rightmove\Interfaces;
 use mattcannon\Rightmove\Exceptions;
 use Illuminate\Support\Collection;
 
-
 /**
  * Interface ParserInterface
  *
@@ -29,7 +28,7 @@ use Illuminate\Support\Collection;
  *
  * $data = $parser->parseBlm();
  *
- * foreach($data as $property){
+ * foreach ($data as $property) {
  *      var_dump($property);
  * }
  * ```
@@ -40,7 +39,6 @@ use Illuminate\Support\Collection;
  */
 interface ParserInterface extends \Psr\Log\LoggerAwareInterface
 {
-
 
     /**
      * Parses the BLM and returns a collection of PropertyObjects

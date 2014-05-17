@@ -15,7 +15,6 @@ namespace mattcannon\Rightmove\Interfaces;
 
 use Illuminate\Support\Collection;
 
-
 /**
  * Interface PropertyObjectInterface
  *

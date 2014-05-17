@@ -180,7 +180,8 @@ BLM;
      * tests that the parser can correctly parse an injected string.
      * @throws mattcannon\Rightmove\Exceptions\InvalidBLMException
      */
-    public function testCanParseBlmContentOnly(){
+    public function testCanParseBlmContentOnly()
+    {
         $this->parser->setBlmContents($this->validDocument);
         $result = $this->parser->parseBlm();
         $this->assertTrue(sizeof($result)>0);

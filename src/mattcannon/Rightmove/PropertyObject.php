@@ -116,10 +116,11 @@ class PropertyObject implements PropertyObjectInterface
         if (!isset($this->internal['images'])) {
             $imageKeys = array_filter(array_keys($this->attributes), function (&$element) {
                     $success = (strpos($element, 'mediaImage')===0); //test to confirm it is an image
-                    if($success) { //test to confirm it is not an epc.
+                    if ($success) { //test to confirm it is not an epc.
                         preg_match('!\d+!', $element, $matches);
                         $success = $success && ($matches[0] < 60);
                     }
+
                     return $success;
             });
             $this->internal['images'] = $imageKeys;
@@ -138,7 +139,8 @@ class PropertyObject implements PropertyObjectInterface
      * @return Collection
      * @api
      */
-    public function getEpcEntries(){
+    public function getEpcEntries()
+    {
         //gets image keys if already calculated, otherwise calculates them.
 
         if (!isset($this->internal['epcs'])) {
@@ -153,6 +155,7 @@ class PropertyObject implements PropertyObjectInterface
         );
         //returns a collection of all non-blank image properties as a Collection.
         $this->filterArrayToEpcEntries($keyIntersects);
+
         return  Collection::make($keyIntersects);
     }
 
@@ -160,9 +163,10 @@ class PropertyObject implements PropertyObjectInterface
      * filters the array down to only EPC data.
      * @param array $entries
      */
-    private function filterArrayToEpcEntries(array &$entries){
-        foreach($entries as $key => $value){
-            if($value == false || (preg_match('/mediaImage6/',$key)+preg_match('/mediaImageText6/',$key)<1)){
+    private function filterArrayToEpcEntries(array &$entries)
+    {
+        foreach ($entries as $key => $value) {
+            if ($value == false || (preg_match('/mediaImage6/',$key)+preg_match('/mediaImageText6/',$key)<1)) {
                 unset($entries[$key]);
             }
         }
@@ -173,7 +177,7 @@ class PropertyObject implements PropertyObjectInterface
      * Specify data which should be serialized to JSON
      * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
      * @return mixed data which can be serialized by __json_encode__,
-     * which is a value of any type other than a resource.
+     *               which is a value of any type other than a resource.
      * @api
      */
     public function jsonSerialize()
@@ -191,7 +195,8 @@ class PropertyObject implements PropertyObjectInterface
      * @return array
      * @api
      */
-    public function toArray(){
+    public function toArray()
+    {
         return $this->jsonSerialize();
     }
 }
