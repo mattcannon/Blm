@@ -11,16 +11,23 @@ namespace mattcannon\Rightmove;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use mattcannon\Rightmove\Exceptions\InvalidBLMException;
-use mattcannon\Rightmove\interfaces\ParserInterface;
+use mattcannon\Rightmove\Interfaces\ParserInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
  * Class Parser
+ *
+ * Please see documentation for [mattcannon\Rightmove\Interfaces\ParserInterface](mattcannon.Rightmove.interfaces.ParserInterface.html) to see how
+ * this should be used. Any Methods not listed in ParserInterface, or LoggerAwareInterface
+ * are not considered public API, and may change without notice.
+ *
+ * @link mattcannon.Rightmove.interfaces.ParserInterface.html
  * @package mattcannon\Rightmove
+ * @author Matt Cannon
  */
-class Parser implements LoggerAwareInterface, ParserInterface
+class Parser implements ParserInterface
 {
     /**
      * The version specified in the BLM header
@@ -54,6 +61,7 @@ class Parser implements LoggerAwareInterface, ParserInterface
     private $blmContents;
     /**
      * Create a new parser object.
+     * @api
      */
     public function __construct()
     {
@@ -74,9 +82,10 @@ class Parser implements LoggerAwareInterface, ParserInterface
     }
     /**
      * Parses the BLM and returns a collection of PropertyObjects
-     * @return Collection
+     * @return \Illuminate\Support\Collection
      * @throws
      * @throws Exceptions\InvalidBLMException
+     * @api
      */
     public function parseBlm()
     {
@@ -110,7 +119,7 @@ class Parser implements LoggerAwareInterface, ParserInterface
      * get the Data section of the BLM, and convert it to a Collection of PropertyObjects
      * @param  string              $fileContents
      * @param  array               $fieldTitles
-     * @return Collection
+     * @return \Illuminate\Support\Collection
      * @throws InvalidBLMException
      */
     public function parseData($fileContents, array $fieldTitles)
@@ -248,15 +257,17 @@ class Parser implements LoggerAwareInterface, ParserInterface
     /**
      * Sets the BLM data to parse - if called, will set blmFilePath to null.
      * @param $blmContentString
+     * @api
      */
     public function setBlmContents($blmContentString){
-        $this->blmContents = $blmContentString;
+        $this->blmContents = mb_convert_encoding($blmContentString,'UTF-8');
         $this->blmFilePath = null;
     }
 
     /**
      * Sets the path of the BLM file to parse - if called, will set blmContents to null.
      * @param $filePath
+     * @api
      */
     public function setBlmFilePath($filePath){
         $this->blmFilePath = $filePath;
@@ -265,6 +276,7 @@ class Parser implements LoggerAwareInterface, ParserInterface
     /**
      * returns the BLM data as a string to be parsed.
      * @return string|null
+     * @api
      */
     public function getBlmContents(){
         return $this->blmContents;
@@ -272,6 +284,7 @@ class Parser implements LoggerAwareInterface, ParserInterface
     /**
      * returns the file path to the BLM file as a string.
      * @return string|null
+     * @api
      */
     public function getBlmFilePath()
     {
@@ -282,6 +295,7 @@ class Parser implements LoggerAwareInterface, ParserInterface
      *
      * @param  LoggerInterface $logger
      * @return null
+     * @api
      * @codeCoverageIgnore
      */
     public function setLogger(LoggerInterface $logger)

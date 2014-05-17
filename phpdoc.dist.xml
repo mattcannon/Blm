@@ -6,6 +6,9 @@
     <transformer>
         <target>docs</target>
     </transformer>
+    <transformations>
+        <template name="clean" />
+    </transformations>
     <files>
         <directory>src</directory>
     </files>

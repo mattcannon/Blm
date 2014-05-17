@@ -5,17 +5,34 @@
  * Date: 17/05/2014
  * Time: 12:20
  */
-namespace mattcannon\Rightmove\interfaces;
+namespace mattcannon\Rightmove\Interfaces;
 
 use mattcannon\Rightmove\Exceptions;
 use Illuminate\Support\Collection;
 
 
 /**
- * Class Parser
- * @package mattcannon\Rightmove
+ * Interface ParserInterface
+ *
+ * To use the parser you should create a new instance of the Parser class, then set the BLM contents, or pass in a file path to a BLM.
+ * To access the data in the BLM, you should call ```parseBlm()```.
+ *
+ * ```php
+ * $parser = new \mattcannon\Rightmove\Parser;
+ * $parser->setBlmFilePath('/path/to/blm/file');
+ *
+ * $data = $parser->parseBlm();
+ *
+ * foreach($data as $property){
+ *      var_dump($property);
+ * }
+ * ```
+ *
+ * @package mattcannon\Rightmove\Interfaces
+ * @author Matt Cannon
+ *
  */
-interface ParserInterface
+interface ParserInterface extends \Psr\Log\LoggerAwareInterface
 {
 
 

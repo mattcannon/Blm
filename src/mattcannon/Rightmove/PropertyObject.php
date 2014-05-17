@@ -9,14 +9,21 @@
 namespace mattcannon\Rightmove;
 
 use Illuminate\Support\Collection;
+use mattcannon\Rightmove\Interfaces\PropertyObjectInterface;
 
 /**
  * Class PropertyObject
- * @property \Illuminate\Support\Collection features
- * @property \Illuminate\Support\Collection images
+ *
+ * Please see documentation for [mattcannon\Rightmove\Interfaces\PropertyObjectInterface](mattcannon.Rightmove.interfaces.PropertyObjectInterface.html) to see how
+ * this should be used. Any Methods not listed in PropertyObjectInterface, or JsonSerializable
+ * are not considered public API, and may change without notice.
+ *
  * @package mattcannon\Rightmove
+ * @property \Illuminate\Support\Collection $features
+ * @property \Illuminate\Support\Collection $images
+ * @author Matt Cannon
  */
-class PropertyObject implements \JsonSerializable
+class PropertyObject implements PropertyObjectInterface
 {
     /**
      * Contains the property attributes
@@ -31,7 +38,8 @@ class PropertyObject implements \JsonSerializable
 
     /**
      * Create a new PropertyObject
-     * @param array $attributes
+     * @param $attributes array
+     * @api
      */
     public function __construct(array $attributes = [])
     {
@@ -70,6 +78,7 @@ class PropertyObject implements \JsonSerializable
     /**
      * get all of the non-blank features as a collection.
      * @return \Illuminate\Support\Collection
+     * @api
      */
     public function getFeatures()
     {
@@ -92,6 +101,7 @@ class PropertyObject implements \JsonSerializable
     /**
      * get all of the non-blank images as a collection.
      * @return \Illuminate\Support\Collection
+     * @api
      */
     public function getImages()
     {
@@ -120,6 +130,7 @@ class PropertyObject implements \JsonSerializable
     /**
      * Get all non-empty epc properties as a collection
      * @return Collection
+     * @api
      */
     public function getEpcEntries(){
         //gets image keys if already calculated, otherwise calculates them.
@@ -150,12 +161,14 @@ class PropertyObject implements \JsonSerializable
             }
         }
     }
+
     /**
-     * (PHP 5 &gt;= 5.4.0)<br/>
+     * (PHP 5 >= 5.4.0)
      * Specify data which should be serialized to JSON
      * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return mixed data which can be serialized by <b>json_encode</b>,
-     *               which is a value of any type other than a resource.
+     * @return mixed data which can be serialized by __json_encode__,
+     * which is a value of any type other than a resource.
+     * @api
      */
     public function jsonSerialize()
     {
@@ -165,5 +178,14 @@ class PropertyObject implements \JsonSerializable
         $epcs = $this->epcs;
 
         return compact('property', 'features', 'images','epcs');
+    }
+
+    /**
+     * returns array of property details, images, epcs, and features
+     * @return array
+     * @api
+     */
+    public function toArray(){
+        return $this->jsonSerialize();
     }
 }
