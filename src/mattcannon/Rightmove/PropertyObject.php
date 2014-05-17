@@ -138,6 +138,11 @@ class PropertyObject implements \JsonSerializable
         $this->filterArrayToEpcEntries($keyIntersects);
         return  Collection::make($keyIntersects);
     }
+
+    /**
+     * filters the array down to only EPC data.
+     * @param array $entries
+     */
     private function filterArrayToEpcEntries(array &$entries){
         foreach($entries as $key => $value){
             if($value == false || (preg_match('/mediaImage6/',$key)+preg_match('/mediaImageText6/',$key)<1)){

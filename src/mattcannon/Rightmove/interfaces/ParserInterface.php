@@ -29,24 +29,24 @@ interface ParserInterface
 
     /**
      * Sets the BLM data to parse - if called, will set blmFilePath to null.
-     * @param $blmContentString
+     * @param string $blmContentString
      */
     public function setBlmContents($blmContentString);
 
     /**
      * Sets the path of the BLM file to parse - if called, will set blmContents to null.
-     * @param $filePath
+     * @param string $filePath
      */
     public function setBlmFilePath($filePath);
     /**
      * returns the BLM data as a string to be parsed.
-     * @return null|string
+     * @return string|null
      */
     public function getBlmContents();
 
     /**
      * returns the file path to the BLM file as a string.
-     * @return null|string
+     * @return string|null
      */
     public function getBlmFilePath();
 }

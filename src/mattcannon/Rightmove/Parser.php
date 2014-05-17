@@ -44,12 +44,12 @@ class Parser implements LoggerAwareInterface, ParserInterface
     protected $logger;
     /**
      * Path to the BLM file to parse
-     * @var null|string
+     * @var string|null
      */
     private $blmFilePath;
     /**
-     *
-     * @var null|string
+     * String containing BLM data to parse
+     * @var string|null
      */
     private $blmContents;
     /**
@@ -264,14 +264,14 @@ class Parser implements LoggerAwareInterface, ParserInterface
     }
     /**
      * returns the BLM data as a string to be parsed.
-     * @return null|string
+     * @return string|null
      */
     public function getBlmContents(){
         return $this->blmContents;
     }
     /**
      * returns the file path to the BLM file as a string.
-     * @return null|string
+     * @return string|null
      */
     public function getBlmFilePath()
     {
