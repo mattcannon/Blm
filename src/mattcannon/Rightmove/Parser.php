@@ -11,6 +11,7 @@ namespace mattcannon\Rightmove;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use mattcannon\Rightmove\Exceptions\InvalidBLMException;
+use mattcannon\Rightmove\interfaces\ParserInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -19,7 +20,7 @@ use Psr\Log\NullLogger;
  * Class Parser
  * @package mattcannon\Rightmove
  */
-class Parser implements LoggerAwareInterface
+class Parser implements LoggerAwareInterface, ParserInterface
 {
     /**
      * The version specified in the BLM header
@@ -45,28 +46,18 @@ class Parser implements LoggerAwareInterface
      * Path to the BLM file to parse
      * @var null|string
      */
-    private $filePath;
+    private $blmFilePath;
     /**
      *
-     * @var string
+     * @var null|string
      */
-    private $fileContents;
+    private $blmContents;
     /**
-     * Create a new parser object - expects a file path to a BLM.
-     * @param null|string $filePath
+     * Create a new parser object.
      */
-    public function __construct($filePath = null)
+    public function __construct()
     {
-        $this->filePath = $filePath;
         $this->logger = new NullLogger();
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getFilePath()
-    {
-        return $this->filePath;
     }
 
     /**
@@ -76,10 +67,10 @@ class Parser implements LoggerAwareInterface
      */
     protected function getBlmFileContents()
     {
-        if(is_null($this->fileContents)){
-            $this->fileContents = implode('', file($this->filePath));
+        if(is_null($this->getBlmContents())){
+            $this->blmContents = implode('', file($this->blmFilePath));
         }
-        return $this->fileContents;
+        return $this->blmContents;
     }
     /**
      * Parses the BLM and returns a collection of PropertyObjects
@@ -87,24 +78,30 @@ class Parser implements LoggerAwareInterface
      * @throws
      * @throws Exceptions\InvalidBLMException
      */
-    public function parseFile()
+    public function parseBlm()
     {
         // Gets content of the BLM file.
-        $this->logger->debug('Getting contents of BLM file.', ['filePath'=>$this->filePath]);
-        $fileContents = $this->getBlmFileContents();
+        if(is_null($this->getBlmContents())){
+            if(is_null($this->getBlmFilePath())){
+                throw new InvalidBLMException('No content received from BLM. you must either call $this->setBlmFilePath() or $this->setBlmContents()');
+            } else{
+                $this->logger->debug('Getting contents of BLM file.', ['filePath'=>$this->blmFilePath]);
+                $this->setBlmContents($this->getBlmFileContents());
+            }
+        }
         //Parses the header of the BLM file, and sets the version,eof, and eor instance variables for the parser.
-        $this->logger->debug('Parsing header of BLM file.', ['filePath'=>$this->filePath]);
-        $this->parseHeader($fileContents);
+        $this->logger->debug('Parsing header of BLM file.', ['filePath'=>$this->blmFilePath]);
+        $this->parseHeader($this->getBlmContents());
 
         //Gets the titles from the field definitions
         /** @var array $fieldTitles */
-        $this->logger->debug('Parsing field titles of BLM file.', ['filePath'=>$this->filePath]);
-        $fieldTitles = $this->parseFields($fileContents);
+        $this->logger->debug('Parsing field titles of BLM file.', ['filePath'=>$this->blmFilePath]);
+        $fieldTitles = $this->parseFields($this->getBlmContents());
 
         //Gets the property data from the Data section, and combines it with the field titles.
         /** @var \Illuminate\Support\Collection $properties */
-        $this->logger->debug('Parsing properties in BLM file.', ['filePath'=>$this->filePath]);
-        $properties = $this->parseData($fileContents, $fieldTitles);
+        $this->logger->debug('Parsing properties in BLM file.', ['filePath'=>$this->blmFilePath]);
+        $properties = $this->parseData($this->getBlmContents(), $fieldTitles);
 
         return $properties;
     }
@@ -145,7 +142,7 @@ class Parser implements LoggerAwareInterface
         foreach ($rows as $row) {
             if (sizeof($row) !== sizeof($fieldTitles)) {
                 $this->logger->critical('BLM file definition mismatch', [
-                        'file'=>$this->filePath,
+                        'file'=>$this->blmFilePath,
                         'property'=>$row[0],
                         'expected field count'=>sizeof($fieldTitles),
                         'actual size'=>sizeof($row)
@@ -153,7 +150,7 @@ class Parser implements LoggerAwareInterface
                 throw new InvalidBLMException(
                     'Property with ID:' . $row[0]
                     .' contains a different number of fields, than the header definition. BLM:'
-                    . $this->filePath
+                    . $this->blmFilePath
                     . ' is invalid'
                 );
             }
@@ -248,6 +245,38 @@ class Parser implements LoggerAwareInterface
         return $rows[0];
     }
 
+    /**
+     * Sets the BLM data to parse - if called, will set blmFilePath to null.
+     * @param $blmContentString
+     */
+    public function setBlmContents($blmContentString){
+        $this->blmContents = $blmContentString;
+        $this->blmFilePath = null;
+    }
+
+    /**
+     * Sets the path of the BLM file to parse - if called, will set blmContents to null.
+     * @param $filePath
+     */
+    public function setBlmFilePath($filePath){
+        $this->blmFilePath = $filePath;
+        $this->blmContents = null;
+    }
+    /**
+     * returns the BLM data as a string to be parsed.
+     * @return null|string
+     */
+    public function getBlmContents(){
+        return $this->blmContents;
+    }
+    /**
+     * returns the file path to the BLM file as a string.
+     * @return null|string
+     */
+    public function getBlmFilePath()
+    {
+        return $this->blmFilePath;
+    }
     /**
      * Sets a logger instance on the object
      *
