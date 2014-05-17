@@ -2,6 +2,10 @@ src/*
 testBlmFiles/*
 tests/*
 vendor/*
+docs/*
+vendor/*
+phpdoc.dist.xml
+_site/*
 composer.lock
 index.php
 *.log

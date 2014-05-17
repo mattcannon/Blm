@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Blogging Like a Hacker
+title: Rightmove BLM parser for PHP
 ---
 #mattcannon\\rightmove
 Rightmove BLM parser for PHP
