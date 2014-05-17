@@ -50,6 +50,7 @@ Parses the BLM and returns a collection of PropertyObjects
 ##setBlmContents()
 
 ```setBlmContents(string $blmContentString)```
+
 Sets the BLM data to parse - if called, will set blmFilePath to null.
 
 ###Parameters
