@@ -1,0 +1,9 @@
+src/*
+testBlmFiles/*
+tests/*
+vendor/*
+composer.lock
+index.php
+*.log
+*.blm
+.idea/*
