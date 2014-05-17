@@ -10,7 +10,7 @@ __namespace__: \mattcannon\Rightmove\interfaces
 To use the parser you should create a new instance of the Parser class, then set the BLM contents, or pass in a file path to a BLM.
 To access the data in the BLM, you should call ```parseBlm()```.
 
-```php
+{% highlight php %}
 $parser = new \mattcannon\Rightmove\Parser;
 $parser->setBlmFilePath('/path/to/blm/file');
 
@@ -19,7 +19,7 @@ $data = $parser->parseBlm();
 foreach($data as $property){
     var_dump($property);
 }
-```
+{% endhighlight %}
 ##Summary
 
 * [parseBlm()](#parseblm)
