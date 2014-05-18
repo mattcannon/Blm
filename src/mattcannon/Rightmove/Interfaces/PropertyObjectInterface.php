@@ -33,6 +33,16 @@ use Illuminate\Support\Collection;
  * @package mattcannon\Rightmove\Interfaces
  * @property \Illuminate\Support\Collection $features
  * @property \Illuminate\Support\Collection $images
+ * @property \Illuminate\Support\Collection $epcs
+ * @property \Illuminate\Support\Collection $hips
+ * @property string $statusId
+ * @property string $priceQualifier
+ * @property string $publishedFlag
+ * @property string $letTypeId
+ * @property string $letFurnId
+ * @property string $letRentFrequency
+ * @property string $tenureTypeId
+ * @property string $transTypeId
  * @author Matt Cannon
  */
 interface PropertyObjectInterface extends \JsonSerializable
@@ -80,4 +90,53 @@ interface PropertyObjectInterface extends \JsonSerializable
      * @api
      */
     public function toArray();
+    /**
+     * returns current property status as a string
+     * @return string
+     * @api
+     */
+    public function getStatusId();
+    /**
+     * returns current price qualifier
+     * @return string
+     * @api
+     */
+    public function getPriceQualifier();
+    /**
+     * returns current published status
+     * @return string
+     * @api
+     */
+    public function getPublishedFlag();
+    /**
+     * returns let type
+     * @return string
+     * @api
+     */
+    public function getLetTypeId();
+    /**
+     * returns property furnishing type
+     * @return string
+     * @api
+     */
+    public function getLetFurnId();
+    /**
+     * returns frequency of let.
+     * @return string
+     * @api
+     */
+    public function getLetRentFrequency();
+    /**
+     * returns tenure type
+     * @return string
+     * @api
+     */
+    public function getTenureTypeId();
+
+    /**
+     * returns property type (Resale | Lettings)
+     * @return string
+     * @api
+     */
+    public function getTransTypeId();
 }

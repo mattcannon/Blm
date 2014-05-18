@@ -14,7 +14,6 @@
 
 namespace mattcannon\Rightmove;
 
-
 /**
  * Class MediaObject
  * @package mattcannon\Rightmove
@@ -24,23 +23,28 @@ class MediaObject {
     /**
      * stores the value of the main field
      * @var null|string
+     * @api
      */
     public $value;
     /**
      * stores an associated caption, if available
      * @var null|string
+     * @api
      */
     public $caption;
     /**
      * stores Media object type (Image | Document   )
      * @var string
+     * @api
      */
     public $type;
 
     /**
+     * Creates an instance of MediaObject
      * @param null|string $value
      * @param null|string $caption
      * @param string $type
+     * @api
      */
     function __construct( $value, $caption = null, $type = 'Image')
     {

@@ -262,6 +262,7 @@ class PropertyObject implements PropertyObjectInterface
     /**
      * returns current property status as a string
      * @return string
+     * @api
      */
     public function getStatusId(){
         $map = [
@@ -278,6 +279,7 @@ class PropertyObject implements PropertyObjectInterface
     /**
      * returns current price qualifier
      * @return string
+     * @api
      */
     public function getPriceQualifier(){
         $map = [
@@ -300,6 +302,7 @@ class PropertyObject implements PropertyObjectInterface
     /**
      * returns current published status
      * @return string
+     * @api
      */
     public function getPublishedFlag(){
         $map = [
@@ -312,6 +315,7 @@ class PropertyObject implements PropertyObjectInterface
     /**
      * returns let type
      * @return string
+     * @api
      */
     public function getLetTypeId(){
         $map = [
@@ -327,6 +331,7 @@ class PropertyObject implements PropertyObjectInterface
     /**
      * returns property furnishing type
      * @return string
+     * @api
      */
     public function getLetFurnId(){
         $map = [
@@ -342,6 +347,7 @@ class PropertyObject implements PropertyObjectInterface
     /**
      * returns frequency of let.
      * @return string
+     * @api
      */
     public function getLetRentFrequency(){
         if(!array_key_exists('letRentFrequency',$this->attributes)){
@@ -362,6 +368,7 @@ class PropertyObject implements PropertyObjectInterface
     /**
      * returns tenure type
      * @return string
+     * @api
      */
     public function getTenureTypeId(){
         $map = [
@@ -377,6 +384,7 @@ class PropertyObject implements PropertyObjectInterface
     /**
      * returns property type (Resale | Lettings)
      * @return string
+     * @api
      */
     public function getTransTypeId(){
         $map = [
