@@ -159,8 +159,12 @@ class PropertyObject implements PropertyObjectInterface
             array_flip($this->internal['images'])
         );
         foreach($imageArray as $k => $v){
-            $imageCaption = str_replace('mediaImage','mediaImageText',$k);
-            $imageArray[$k] = new MediaObject($v,$this->{$imageCaption});
+            $imageCaptionKey = str_replace('mediaImage','mediaImageText',$k);
+            $imageCaption = '';
+            if(array_key_exists($imageCaptionKey,$this->attributes)){
+                $imageCaption = $this->attributes[$imageCaption];
+            }
+            $imageArray[$k] = new MediaObject($v, $imageCaption);
         }
         //returns a collection of all non-blank image properties as a Collection.
         return  Collection::make($imageArray);
