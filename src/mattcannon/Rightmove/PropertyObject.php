@@ -62,10 +62,16 @@ class PropertyObject implements PropertyObjectInterface
         switch ($key) {
             case 'features':
                 return $this->getFeatures();
+                break;
             case 'images':
                 return $this->getImages();
+                break;
             case 'epcs':
                 return $this->getEpcEntries();
+                break;
+            case 'hips':
+                return $this->getHipEntries();
+                break;
             default:
                 return $this->attributes[$key];
         }
@@ -148,7 +154,7 @@ class PropertyObject implements PropertyObjectInterface
 
         if (!isset($this->internal['epcs'])) {
             $imageKeys = array_filter(array_keys($this->attributes), function (&$element) {
-                    return (strpos($element, 'mediaImage')===0);
+                    return (preg_match('/mediaImage6[0-1]/',$element) || preg_match('/mediaDocument[5-9][0-9]/',$element));
                 });
             $this->internal['epcs'] = $imageKeys;
         }
@@ -156,9 +162,15 @@ class PropertyObject implements PropertyObjectInterface
             $this->attributes,
             array_flip($this->internal['epcs'])
         );
-        //returns a collection of all non-blank image properties as a Collection.
-        $this->filterArrayToEpcEntries($keyIntersects);
-
+        foreach($keyIntersects as $k => $v){
+            $captionKey = str_replace('mediaImage','mediaImageText',$k);
+            $captionKey = str_replace('mediaDocument','mediaDocumentText',$captionKey);
+            if($this->{$captionKey} == 'EPC'){
+                $keyIntersects[$k] = new MediaObject($v, $this->{$captionKey});
+            } else {
+                unset($keyIntersects[$k]);
+            }
+        }
         return  Collection::make($keyIntersects);
     }
 
@@ -166,14 +178,31 @@ class PropertyObject implements PropertyObjectInterface
      * filters the array down to only EPC data.
      * @param array $entries
      */
-    private function filterArrayToEpcEntries(array &$entries)
-    {
-        foreach ($entries as $key => $value) {
-            if ($value == false || (preg_match('/mediaImage6/',$key)+preg_match('/mediaImageText6/',$key)<1)) {
-                unset($entries[$key]);
+    public function getHipEntries(){
+        //gets image keys if already calculated, otherwise calculates them.
+        if (!isset($this->internal['epcs'])) {
+            $imageKeys = array_filter(array_keys($this->attributes), function (&$element) {
+                    return (preg_match('/mediaImage6[0-1]/',$element) || preg_match('/mediaDocument[5-9][0-9]/',$element));
+                });
+            $this->internal['epcs'] = $imageKeys;
+        }
+        $keyIntersects = array_intersect_key(
+            $this->attributes,
+            array_flip($this->internal['epcs'])
+        );
+        foreach($keyIntersects as $k => $v){
+            $captionKey = str_replace('mediaImage','mediaImageText',$k);
+            $captionKey = str_replace('mediaDocument','mediaDocumentText',$captionKey);
+            if($this->{$captionKey} == 'HIP'){
+                $keyIntersects[$k] = new MediaObject($v, $this->{$captionKey});
+            } else {
+                unset($keyIntersects[$k]);
             }
         }
+        return  Collection::make($keyIntersects);
     }
+
+
 
     /**
      * (PHP 5 >= 5.4.0)
@@ -190,7 +219,7 @@ class PropertyObject implements PropertyObjectInterface
         $images = $this->images;
         $epcs = $this->epcs;
 
-        return compact('property', 'features', 'images','epcs');
+        return compact('property', 'features', 'images', 'epcs');
     }
 
     /**
