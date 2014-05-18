@@ -98,9 +98,9 @@ class PropertyObject implements \JsonSerializable
         //gets image keys if already calculated, otherwise calculates them.
 
         if (!isset($this->internal['images'])) {
-            $imageKeys = array_filter(array_keys($this->attributes), function (&$element) {
-                    $success = (strpos($element, 'mediaImage')===0); //test to confirm it is an image
-                    if($success) { //test to confirm it is not an epc.
+            $imageKeys = array_filter(array_keys(array_filter($this->attributes)), function (&$element) {
+                    $success = (preg_match('/mediaImage[0-9][0-9]/',$element)); //test to confirm it is an image
+                    if ($success) { //test to confirm it is not an epc.
                         preg_match('!\d+!', $element, $matches);
                         $success = $success && ($matches[0] < 60);
                     }
@@ -108,13 +108,16 @@ class PropertyObject implements \JsonSerializable
             });
             $this->internal['images'] = $imageKeys;
         }
+        $imageArray = array_intersect_key(
+            $this->attributes,
+            array_flip($this->internal['images'])
+        );
+        foreach($imageArray as $k => $v){
+            $imageCaption = str_replace('mediaImage','mediaImageText',$k);
+            $imageArray[$k] = new MediaObject($v,$this->{$imageCaption});
+        }
         //returns a collection of all non-blank image properties as a Collection.
-        return  Collection::make(array_filter(
-            array_intersect_key(
-                $this->attributes,
-                array_flip($this->internal['images'])
-            )
-        ));
+        return  Collection::make($imageArray);
     }
 
     /**
