@@ -15,6 +15,14 @@ class PropertyObjectTest extends Base
     public function setUp()
     {
         $propertyArray = [
+            'statusId'  => 0,
+            'priceQualifier' => 0,
+            'publishedFlag' => 0,
+            'letTypeId' => 0,
+            'letFurnId' => 0,
+            'letRentFrequency' => 0,
+            'tenureTypeId' => 1,
+            'transTypeId' => 1,
             'mediaImage01'=>'image1',
             'mediaImage02'=>'image2',
             'mediaImage03'=>'image3',
@@ -85,4 +93,52 @@ class PropertyObjectTest extends Base
         $this->assertEquals('testValue',$this->testClass->houseName);
     }
 
+    public function testCanGetEpcs()
+    {
+        $result = $this->testClass->epcs;
+        $this->assertEquals('Image',$result->first()->type);
+    }
+
+    public function testCanGetHips()
+    {
+        $this->testClass->mediaImageText60 = 'HIP';
+        $this->testClass->mediaImage60 = 'hip';
+        $result = $this->testClass->hips;
+        $this->assertEquals(1,sizeof($result));
+    }
+
+    public function testCanGetStatusId()
+    {
+        $this->assertEquals($this->testClass->statusId,'Available');
+    }
+
+    public function testCanGetPriceQualifier()
+    {
+        $this->assertEquals($this->testClass->priceQualifier,'Default');
+    }
+
+    public function testCanGetPublishedFlag()
+    {
+        $this->assertEquals($this->testClass->publishedFlag,'Hidden/invisible');
+    }
+    public function testCanGetLetTypeId()
+    {
+        $this->assertEquals($this->testClass->letTypeId,'Not Specified');
+    }
+    public function testCanGetLetFurnId()
+    {
+        $this->assertEquals($this->testClass->letFurnId,'Furnished');
+    }
+    public function testCanGetLetRentFrequency()
+    {
+        $this->assertEquals($this->testClass->letRentFrequency,'Weekly');
+    }
+    public function testCanGetTenureTypeId()
+    {
+        $this->assertEquals($this->testClass->tenureTypeId,'Freehold');
+    }
+    public function testCanGetTransTypeId()
+    {
+        $this->assertEquals($this->testClass->transTypeId,'Resale');
+    }
 }

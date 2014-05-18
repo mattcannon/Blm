@@ -27,6 +27,16 @@ use mattcannon\Rightmove\Interfaces\PropertyObjectInterface;
  * @package mattcannon\Rightmove
  * @property \Illuminate\Support\Collection $features
  * @property \Illuminate\Support\Collection $images
+ * @property \Illuminate\Support\Collection $epcs
+ * @property \Illuminate\Support\Collection $hips
+ * @property string $statusId
+ * @property string $priceQualifier
+ * @property string $publishedFlag
+ * @property string $letTypeId
+ * @property string $letFurnId
+ * @property string $letRentFrequency
+ * @property string $tenureTypeId
+ * @property string $transTypeId
  * @author Matt Cannon
  */
 class PropertyObject implements PropertyObjectInterface
@@ -41,7 +51,16 @@ class PropertyObject implements PropertyObjectInterface
      * @var array
      */
     private $internal = array('features'=>null,'images'=>null,'epcs'=>null);
-
+    /**
+     * Internal cache of public getters available for use by magic get method
+     * @var array
+     */
+    private $internalMethods = [];
+    /**
+     * used in magic get method to get a list of publicly available methods.
+     * @var \ReflectionClass
+     */
+    private $reflector;
     /**
      * Create a new PropertyObject
      * @param $attributes array
@@ -50,6 +69,7 @@ class PropertyObject implements PropertyObjectInterface
     public function __construct(array $attributes = [])
     {
         $this->attributes = $attributes;
+        $this->reflector = new \ReflectionClass($this);
     }
 
     /**
@@ -59,22 +79,25 @@ class PropertyObject implements PropertyObjectInterface
      */
     public function __get($key)
     {
-        switch ($key) {
-            case 'features':
-                return $this->getFeatures();
-                break;
-            case 'images':
-                return $this->getImages();
-                break;
-            case 'epcs':
-                return $this->getEpcEntries();
-                break;
-            case 'hips':
-                return $this->getHipEntries();
-                break;
-            default:
-                return $this->attributes[$key];
+        $methodName = 'get'.ucfirst($key);
+        if(in_array($key,['epcs','hips'])){
+            $methodName = substr($methodName,0,-1);
+            $methodName .='Entries';
         }
+        if(sizeof($this->internalMethods) == 0){
+            $methods = $this->reflector->getMethods(\ReflectionMethod::IS_PUBLIC);
+            foreach($methods as $k => $v){
+                $methods[$k] = $v->name;
+            }
+            $methods = array_filter($methods,function(&$element){
+                    return substr($element,0,2) !== '__';
+                });
+            $this->internalMethods = $methods;
+        }
+        if(in_array($methodName,$this->internalMethods)){
+            return $this->{$methodName}();
+        }
+        return $this->attributes[$key];
     }
 
     /**
@@ -165,8 +188,9 @@ class PropertyObject implements PropertyObjectInterface
         foreach($keyIntersects as $k => $v){
             $captionKey = str_replace('mediaImage','mediaImageText',$k);
             $captionKey = str_replace('mediaDocument','mediaDocumentText',$captionKey);
+            $type = (strpos($k,'mediaDocument') ===false) ? 'Image' : 'Document';
             if($this->{$captionKey} == 'EPC'){
-                $keyIntersects[$k] = new MediaObject($v, $this->{$captionKey});
+                $keyIntersects[$k] = new MediaObject($v, $this->{$captionKey},$type);
             } else {
                 unset($keyIntersects[$k]);
             }
@@ -175,8 +199,9 @@ class PropertyObject implements PropertyObjectInterface
     }
 
     /**
-     * filters the array down to only EPC data.
-     * @param array $entries
+     * Get all non-empty hip properties as a collection
+     * @return Collection
+     * @api
      */
     public function getHipEntries(){
         //gets image keys if already calculated, otherwise calculates them.
@@ -201,8 +226,6 @@ class PropertyObject implements PropertyObjectInterface
         }
         return  Collection::make($keyIntersects);
     }
-
-
 
     /**
      * (PHP 5 >= 5.4.0)
@@ -231,4 +254,132 @@ class PropertyObject implements PropertyObjectInterface
     {
         return $this->jsonSerialize();
     }
+
+    /**
+     * returns current property status as a string
+     * @return string
+     */
+    public function getStatusId(){
+        $map = [
+            0 => 'Available',
+            1 => 'SSTC',
+            2 => 'SSTCM',
+            3 => 'Under Offer',
+            4 => 'Reserved',
+            5 => 'Let Agreed'
+        ];
+        return $map[$this->attributes['statusId']];
+    }
+
+    /**
+     * returns current price qualifier
+     * @return string
+     */
+    public function getPriceQualifier(){
+        $map = [
+            0 => "Default",
+            1 => "POA",
+            2 => "Guide Price",
+            3 => "Fixed Price",
+            4 => "Offers in Excess of",
+            5 => "OIRO",
+            6 => "Sale by Tender",
+            7 => "From",
+            9 => "Shared Ownership",
+            10 => "Offers Over",
+            11 => "Part Buy Part Rent",
+            12 => "Shared Equity"
+        ];
+        return $map[$this->attributes['priceQualifier']];
+    }
+
+    /**
+     * returns current published status
+     * @return string
+     */
+    public function getPublishedFlag(){
+        $map = [
+            0 => 'Hidden/invisible',
+            1 => 'Visible'
+        ];
+        return $map[$this->attributes['publishedFlag']];
+    }
+
+    /**
+     * returns let type
+     * @return string
+     */
+    public function getLetTypeId(){
+        $map = [
+            0 => 'Not Specified',
+            1 => 'Long Term',
+            2 => 'Short Term',
+            3 => 'Student',
+            4 => 'Commercial'
+        ];
+        return $map[$this->attributes['letTypeId']];
+    }
+
+    /**
+     * returns property furnishing type
+     * @return string
+     */
+    public function getLetFurnId(){
+        $map = [
+            0 => "Furnished",
+            1 => "Part Furnished",
+            2 => "Unfurnished",
+            3 => "Not Specified",
+            4 => "Furnished/Un Furnished"
+        ];
+        return $map[$this->attributes['letFurnId']];
+    }
+
+    /**
+     * returns frequency of let.
+     * @return string
+     */
+    public function getLetRentFrequency(){
+        if(!array_key_exists('letRentFrequency',$this->attributes)){
+            return 'Price per Month';
+        } else if(strlen($this->attributes['letRentFrequency']) == 0){
+            return 'Price per Month';
+        }
+        $map = [
+            0 => "Weekly" ,
+            1 => "Monthly",
+            2 => "Quarterly",
+            3 => "Annual",
+            5 => "Per person per week"
+        ];
+        return $map[$this->attributes['letRentFrequency']];
+    }
+
+    /**
+     * returns tenure type
+     * @return string
+     */
+    public function getTenureTypeId(){
+        $map = [
+            1 => "Freehold",
+            2 => "Leasehold",
+            3 => "Feudal",
+            4 => "Commonhold",
+            5 => "Share of Freehold"
+        ];
+        return $map[$this->attributes['tenureTypeId']];
+    }
+
+    /**
+     * returns property type (Resale | Lettings)
+     * @return string
+     */
+    public function getTransTypeId(){
+        $map = [
+            1 => "Resale",
+            2 => "Lettings"
+        ];
+        return $map[$this->attributes['transTypeId']];
+    }
+
 }

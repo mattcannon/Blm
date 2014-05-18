@@ -22,21 +22,30 @@ namespace mattcannon\Rightmove;
 class MediaObject {
 
     /**
+     * stores the value of the main field
      * @var null|string
      */
     public $value;
     /**
+     * stores an associated caption, if available
      * @var null|string
      */
     public $caption;
+    /**
+     * stores Media object type (Image | Document   )
+     * @var string
+     */
+    public $type;
 
     /**
      * @param null|string $value
      * @param null|string $caption
+     * @param string $type
      */
-    function __construct($value,$caption)
+    function __construct( $value, $caption = null, $type = 'Image')
     {
         $this->value = $value;
         $this->caption = $caption;
+        $this->type = $type;
     }
 }
