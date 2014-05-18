@@ -114,8 +114,13 @@ class PropertyObject implements PropertyObjectInterface
         //gets image keys if already calculated, otherwise calculates them.
 
         if (!isset($this->internal['images'])) {
+<<<<<<< HEAD
+            $imageKeys = array_filter(array_keys($this->attributes), function (&$element) {
+                    $success = (strpos($element, 'mediaImage')===0); //test to confirm it is an image
+=======
             $imageKeys = array_filter(array_keys(array_filter($this->attributes)), function (&$element) {
                     $success = (preg_match('/mediaImage[0-9][0-9]/',$element)); //test to confirm it is an image
+>>>>>>> develop
                     if ($success) { //test to confirm it is not an epc.
                         preg_match('!\d+!', $element, $matches);
                         $success = $success && ($matches[0] < 60);
