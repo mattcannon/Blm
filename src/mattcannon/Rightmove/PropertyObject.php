@@ -48,10 +48,16 @@ class PropertyObject implements \JsonSerializable
         switch ($key) {
             case 'features':
                 return $this->getFeatures();
+                break;
             case 'images':
                 return $this->getImages();
+                break;
             case 'epcs':
                 return $this->getEpcEntries();
+                break;
+            case 'hips':
+                return $this->getHipEntries();
+                break;
             default:
                 return $this->attributes[$key];
         }
@@ -126,10 +132,9 @@ class PropertyObject implements \JsonSerializable
      */
     public function getEpcEntries(){
         //gets image keys if already calculated, otherwise calculates them.
-
         if (!isset($this->internal['epcs'])) {
             $imageKeys = array_filter(array_keys($this->attributes), function (&$element) {
-                    return (strpos($element, 'mediaImage')===0);
+                    return (preg_match('/mediaImage6[0-1]/',$element) || preg_match('/mediaDocument[5-9][0-9]/',$element));
                 });
             $this->internal['epcs'] = $imageKeys;
         }
@@ -137,17 +142,47 @@ class PropertyObject implements \JsonSerializable
             $this->attributes,
             array_flip($this->internal['epcs'])
         );
-        //returns a collection of all non-blank image properties as a Collection.
-        $this->filterArrayToEpcEntries($keyIntersects);
-        return  Collection::make($keyIntersects);
-    }
-    private function filterArrayToEpcEntries(array &$entries){
-        foreach($entries as $key => $value){
-            if($value == false || (preg_match('/mediaImage6/',$key)+preg_match('/mediaImageText6/',$key)<1)){
-                unset($entries[$key]);
+        foreach($keyIntersects as $k => $v){
+            $captionKey = str_replace('mediaImage','mediaImageText',$k);
+            $captionKey = str_replace('mediaDocument','mediaDocumentText',$captionKey);
+            if($this->{$captionKey} == 'EPC'){
+                $keyIntersects[$k] = new MediaObject($v, $this->{$captionKey});
+            } else {
+                unset($keyIntersects[$k]);
             }
         }
+        return  Collection::make($keyIntersects);
     }
+    /**
+     * Get all non-empty hip properties as a collection
+     * @return Collection
+     */
+    public function getHipEntries(){
+        //gets image keys if already calculated, otherwise calculates them.
+        if (!isset($this->internal['epcs'])) {
+            $imageKeys = array_filter(array_keys($this->attributes), function (&$element) {
+                    return (preg_match('/mediaImage6[0-1]/',$element) || preg_match('/mediaDocument[5-9][0-9]/',$element));
+                });
+            $this->internal['epcs'] = $imageKeys;
+        }
+        $keyIntersects = array_intersect_key(
+            $this->attributes,
+            array_flip($this->internal['epcs'])
+        );
+        foreach($keyIntersects as $k => $v){
+            $captionKey = str_replace('mediaImage','mediaImageText',$k);
+            $captionKey = str_replace('mediaDocument','mediaDocumentText',$captionKey);
+            if($this->{$captionKey} == 'HIP'){
+                $keyIntersects[$k] = new MediaObject($v, $this->{$captionKey});
+            } else {
+                unset($keyIntersects[$k]);
+            }
+        }
+        return  Collection::make($keyIntersects);
+    }
+
+
+
     /**
      * (PHP 5 &gt;= 5.4.0)<br/>
      * Specify data which should be serialized to JSON
@@ -162,6 +197,6 @@ class PropertyObject implements \JsonSerializable
         $images = $this->images;
         $epcs = $this->epcs;
 
-        return compact('property', 'features', 'images','epcs');
+        return compact('property', 'features', 'images', 'epcs');
     }
 }
