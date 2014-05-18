@@ -14,11 +14,17 @@ class ParserTest extends Base
      * @var mattcannon\Rightmove\Parser;
      */
     protected $parser;
+    /**
+     * @var string
+     */
     protected $validDocument;
 
+    /**
+     *
+     */
     public function setUp()
     {
-        $this->parser = new Parser('testPath');
+        $this->parser = new Parser();
 
         $this->testClass = $this->parser;
         parent::setUp();
@@ -37,23 +43,39 @@ AGENT_REF|HOUSE_NAME_NUMBER|STREET_NAME|OS_TOWN_CITY|OS_REGION|ZIPCODE|COUNTRY_C
 BLM;
 
     }
+
+    /**
+     *
+     */
     public function tearDown()
     {
         unset($this->parser);
         parent::tearDown();
     }
+
+    /**
+     * tests that a parser object is correctly instantiated
+     */
     public function testCanConstructParser()
     {
-        $parser = new Parser('withPath');
+        $parser = new Parser();
         $this->assertTrue(get_class($parser)=='mattcannon\Rightmove\Parser');
     }
 
+    /**
+     * test that a parser can receive file paths correctly
+     */
     public function testCanSetPathCorrectly()
     {
-        $parser = new Parser('withPath');
-        $this->assertTrue($parser->getFilePath() == 'withPath');
+        $parser = new Parser();
+        $parser->setBlmFilePath('withPath');
+        $this->assertTrue($parser->getBlmFilePath() == 'withPath');
     }
 
+    /**
+     * tests that the parser can interpret the version field of the file
+     * @throws mattcannon\Rightmove\Exceptions\InvalidBLMException
+     */
     public function testCanParseHeaderVersion()
     {
         $this->parser->parseHeader($this->validDocument);
@@ -61,12 +83,21 @@ BLM;
         $this->assertTrue(isset($version),'version should be set');
     }
 
+    /**
+     * tests that the parser can interpret the end of row property correctly
+     * @throws mattcannon\Rightmove\Exceptions\InvalidBLMException
+     */
     public function testCanParseHeaderEOR()
     {
         $this->parser->parseHeader($this->validDocument);
         $version = $this->getProperty("eor");
         $this->assertTrue(isset($version),'eor should be set');
     }
+
+    /**
+     * tests that the parser can interpret the end of field property correctly
+     * @throws mattcannon\Rightmove\Exceptions\InvalidBLMException
+     */
     public function testCanParseHeaderEOF()
     {
         $this->parser->parseHeader($this->validDocument);
@@ -75,6 +106,7 @@ BLM;
     }
 
     /**
+     * test that an exception is thrown if there isn't a version number set
      * @expectedException mattcannon\Rightmove\Exceptions\InvalidBLMException
      */
     public function testDoesThrowExceptionForMissingVersion()
@@ -84,6 +116,7 @@ BLM;
         $this->parser->parseHeader($document);
     }
     /**
+     * test that an exception is thrown if there isn't an EOR delimiter set
      * @expectedException mattcannon\Rightmove\Exceptions\InvalidBLMException
      */
     public function testDoesThrowExceptionForMissingEor()
@@ -93,6 +126,7 @@ BLM;
         $this->parser->parseHeader($document);
     }
     /**
+     * test that an exception is thrown if there isn't an EOF delimiter set
      * @expectedException mattcannon\Rightmove\Exceptions\InvalidBLMException
      */
     public function testDoesThrowExceptionForMissingEof()
@@ -102,6 +136,9 @@ BLM;
         $this->parser->parseHeader($document);
     }
 
+    /**
+     * tests that the parser can correctly seperate fields into the correct number of elements.
+     */
     public function testCanParseFields()
     {
         $this->setProperty('eof','|');
@@ -110,6 +147,10 @@ BLM;
         $this->assertTrue(sizeof($result)==48);
     }
 
+    /**
+     * tests that the parser correctly parses a document into the correct number of properties.
+     * @throws mattcannon\Rightmove\Exceptions\InvalidBLMException
+     */
     public function testCanParseData()
     {
         $this->setProperty('eof','|');
@@ -122,16 +163,31 @@ BLM;
         $this->assertTrue(sizeof($result)==1);
     }
 
+    /**
+     * tests that the blm will correctly parse a file.
+     */
     public function testCanParseFile()
     {
 
         $oClass = $this->getMock('mattcannon\Rightmove\Parser', array('getBlmFileContents'),array('./testPath'));
         $oClass->expects($this->any())->method('getBlmFileContents')->will($this->returnValue($this->validDocument));
-        $result = $oClass->parseFile();
+        $oClass->setBlmFilePath('anyPath');
+        $result = $oClass->parseBlm();
         $this->assertTrue(sizeof($result)==1);
     }
 
     /**
+     * tests that the parser can correctly parse an injected string.
+     * @throws mattcannon\Rightmove\Exceptions\InvalidBLMException
+     */
+    public function testCanParseBlmContentOnly()
+    {
+        $this->parser->setBlmContents($this->validDocument);
+        $result = $this->parser->parseBlm();
+        $this->assertTrue(sizeof($result)>0);
+    }
+    /**
+     * tests that the parser correctly throws an error if there is a mismatch between fields defined, and parsed.
      * @expectedException mattcannon\Rightmove\Exceptions\InvalidBLMException
      */
     public function testDoesThrowExceptionForFieldCountMismatch()
