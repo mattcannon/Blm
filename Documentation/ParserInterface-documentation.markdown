@@ -5,11 +5,11 @@ title: Parser - Public API documentation
 #Public API documentation
 The public API for ```\mattcannon\Rightmove\Parser``` is defined in the ParserInterface.
 
-__namespace__: \mattcannon\Rightmove\interfaces
+__namespace__: \mattcannon\Rightmove\Interfaces
 
 #ParserInterface
-To use the parser you should create a new instance of the Parser class, then set the BLM contents, or pass in a file path to a BLM.
-To access the data in the BLM, you should call ```parseBlm()```.
+
+To use the parser you should create a new instance of the Parser class, then set the BLM contents, or pass in a file path to a BLM. To access the data in the BLM, you should call ```parseBlm()```.
 
 {% highlight php startinline %}
 $parser = new \mattcannon\Rightmove\Parser;
@@ -17,72 +17,76 @@ $parser->setBlmFilePath('/path/to/blm/file');
 
 $data = $parser->parseBlm();
 
-foreach($data as $property){
+foreach ($data as $property) {
     var_dump($property);
 }
 {% endhighlight %}
+
 ##Summary
 
-* [parseBlm()](#parseblm)
+* [parseBlm()](#parseBlm)
 * [setBlmContents()](#setBlmContents)
 * [setBlmFilePath()](#setBlmFilePath)
 * [getBlmContents()](#getBlmContents)
 * [getBlmFilePath()](#getBlmFilePath)
 
-__file__: interfaces/ParserInterface.php
+__file__ : Interfaces/ParserInterface.php
 
-__package__: \mattcannon\Rightmove
+__package__ : \mattcannon\Rightmove\Interfaces
 
-#Methods
 
-##parseBlm()
+##Methods
 
-{% highlight php startinline %}parseBlm() : \Illuminate\Support\Collection{% endhighlight %}
+###parseBlm()
+
+{% highlight php startinline %}parseBlm() : \Illuminate\Support\Collection {% endhighlight %}
 
 Parses the BLM and returns a collection of PropertyObjects
 
-###Throws
-{% highlight php startinline %}\mattcannon\Rightmove\Exceptions\InvalidBLMException{% endhighlight %}
+####Throws
 
-###Returns
+{% highlight php startinline %}\mattcannon\Rightmove\Exceptions\InvalidBLMException {% endhighlight %}
 
-{% highlight php startinline %}\Illuminate\Support\Collection{% endhighlight %}
+####Returns
 
-##setBlmContents()
+{% highlight php startinline %}\Illuminate\Support\Collection {% endhighlight %}
 
-{% highlight php startinline %}setBlmContents(string $blmContentString){% endhighlight %}
+###setBlmContents()
+
+{% highlight php startinline %}setBlmContents(string $blmContentString) {% endhighlight %}
 
 Sets the BLM data to parse - if called, will set blmFilePath to null.
 
-###Parameters
+####Parameters
 
-{% highlight php startinline %}string	$blmContentString{% endhighlight %}
+{% highlight php startinline %}string	$blmContentString	 {% endhighlight %}
 
-##setBlmFilePath()
+###setBlmFilePath()
 
-{% highlight php startinline %}setBlmFilePath(string $filePath){% endhighlight %}
+{% highlight php startinline %}setBlmFilePath(string $filePath) {% endhighlight %}
 
 Sets the path of the BLM file to parse - if called, will set blmContents to null.
 
-###Parameters
+####Parameters
 
-{% highlight php startinline %}string	$filePath{% endhighlight %}
+{% highlight php startinline %}string	$filePath	 {% endhighlight %}
 
-##getBlmContents()
+###getBlmContents()
 
-{% highlight php startinline %}getBlmContents() : string|null{% endhighlight %}
+{% highlight php startinline %}getBlmContents() : string|null {% endhighlight %}
 
 returns the BLM data as a string to be parsed.
 
-###Returns
-{% highlight php startinline %}string|null{% endhighlight %}
+####Returns
 
-##getBlmFilePath()
+{% highlight php startinline %}string|null {% endhighlight %}
 
-{% highlight php startinline %}getBlmFilePath() : string|null{% endhighlight %}
+###getBlmFilePath()
+
+{% highlight php startinline %}getBlmFilePath() : string|null {% endhighlight %}
 
 returns the file path to the BLM file as a string.
 
-###Returns
-{% highlight php startinline %}string|null{% endhighlight %}
+####Returns
 
+{% highlight php startinline %}string|null {% endhighlight %}
