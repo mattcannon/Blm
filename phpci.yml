@@ -1,0 +1,16 @@
+build_settings:
+    clone_depth: 5
+    verbose: true
+    ignore:
+        - "vendor"
+
+setup:
+    composer:
+        action: "install"
+
+test:
+    php_unit:
+    php_docblock_checker:
+		path: "src/"
+	    allowed_warnings: 10
+
