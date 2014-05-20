@@ -210,7 +210,12 @@ class PropertyObject implements PropertyObjectInterface
     public function getHipEntries(){
         //gets image keys if already calculated, otherwise calculates them.
         if (!isset($this->internal['epcs'])) {
-            $imageKeys = array_filter(array_keys($this->attributes), function (&$element) {
+            $imageKeys = array_filter(array_keys($this->attributes),
+                /**
+                 * filters array down to only contain media images, and media documents.
+                 * @param $element
+                 */
+                function (&$element) {
                     return (preg_match('/mediaImage6[0-1]/',$element) || preg_match('/mediaDocument[5-9][0-9]/',$element));
                 });
             $this->internal['epcs'] = $imageKeys;
