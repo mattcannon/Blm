@@ -10,6 +10,6 @@ setup:
 
 test:
     php_unit:
-    php_docblock_checker:
-        allowed_warnings: 10
-        path: "src"
+#    php_docblock_checker:
+#        allowed_warnings: 10
+#        path: "src"
