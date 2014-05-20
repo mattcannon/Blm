@@ -11,6 +11,6 @@ setup:
 test:
     php_unit:
     php_docblock_checker:
-		path: "src/"
-	    allowed_warnings: 10
+        path: "src/"
+        allowed_warnings: 10
 
