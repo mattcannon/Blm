@@ -14,38 +14,13 @@
 namespace mattcannon\Rightmove\Interfaces;
 
 /**
- * Class MediaObject
- * @package mattcannon\Rightmove
+ * Class BlmLoaderInterface
+ * @package mattcannon\Rightmove\Interfaces
  */
-interface MediaObjectInterface
+interface BlmLoaderInterface
 {
     /**
-     * @return null|string
+     * @return string contents of blm
      */
-    public function getCaption();
-
-    /**
-     * @param null|string $caption
-     */
-    public function setCaption($caption);
-
-    /**
-     * @return string
-     */
-    public function getType();
-
-    /**
-     * @param string $type
-     */
-    public function setType($type);
-
-    /**
-     * @return null|string
-     */
-    public function getValue();
-
-    /**
-     * @param null|string $value
-     */
-    public function setValue($value);
+    public function getBlmContents();
 }

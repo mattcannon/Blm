@@ -2,9 +2,10 @@
     "name": "mattcannon/rightmove",
     "description": "Rightmove BLM Parser",
     "require": {
-        "illuminate/support": "4.1.*",
+        "illuminate/support": "4.*",
         "php": ">=5.4.0",
-        "psr/log": "1.0.*"
+        "psr/log": "1.0.*",
+        "league/flysystem": "0.5.*"
     },
     "license": "MIT",
     "authors": [

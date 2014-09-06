@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The MIT License (MIT)
  * Copyright (c) 2014 Matt Cannon
@@ -11,41 +12,22 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-namespace mattcannon\Rightmove\Interfaces;
 
-/**
- * Class MediaObject
- * @package mattcannon\Rightmove
- */
-interface MediaObjectInterface
+use mattcannon\Rightmove\Loaders\BlmFileLoader;
+
+class BlmFileLoaderTest extends Base
 {
-    /**
-     * @return null|string
-     */
-    public function getCaption();
-
-    /**
-     * @param null|string $caption
-     */
-    public function setCaption($caption);
-
-    /**
-     * @return string
-     */
-    public function getType();
-
-    /**
-     * @param string $type
-     */
-    public function setType($type);
-
-    /**
-     * @return null|string
-     */
-    public function getValue();
-
-    /**
-     * @param null|string $value
-     */
-    public function setValue($value);
+    public function setUp()
+    {
+        //"/Users/matt/Sites/rightmove/tests/mattcannon"
+        $path = dirname(dirname(dirname(dirname(__DIR__)))).'/testBlmFiles';
+        $adapter = new \League\Flysystem\Adapter\Local($path);
+        $loader = new BlmFileLoader(new League\Flysystem\Filesystem($adapter),'overseasTestFile.blm');
+        $this->loader = $loader;
+    }
+    public function testGetBlmContents()
+    {
+        $contents = $this->loader->getBlmContents();
+        $this->assertTrue(strlen($contents) > 0);
+    }
 }

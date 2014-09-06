@@ -11,41 +11,34 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-namespace mattcannon\Rightmove\Interfaces;
+
+namespace mattcannon\Rightmove\Loaders;
+
+use mattcannon\Rightmove\Interfaces\BlmLoaderInterface;
 
 /**
- * Class MediaObject
- * @package mattcannon\Rightmove
+ * Class BlmStringLoader
+ * @package mattcannon\Rightmove\Loaders
  */
-interface MediaObjectInterface
+class BlmStringLoader implements BlmLoaderInterface
 {
     /**
-     * @return null|string
+     * @var string - contents of blm
      */
-    public function getCaption();
+    private $blmContents;
 
     /**
-     * @param null|string $caption
+     * @param string $blmContents - contents of blm to be parsed
      */
-    public function setCaption($caption);
-
+    public function __construct($blmContents)
+    {
+        $this->blmContents = $blmContents;
+    }
     /**
-     * @return string
+     * @return string contents of blm
      */
-    public function getType();
-
-    /**
-     * @param string $type
-     */
-    public function setType($type);
-
-    /**
-     * @return null|string
-     */
-    public function getValue();
-
-    /**
-     * @param null|string $value
-     */
-    public function setValue($value);
+    public function getBlmContents()
+    {
+        return $this->blmContents;
+    }
 }

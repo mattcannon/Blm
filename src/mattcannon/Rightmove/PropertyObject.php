@@ -80,23 +80,24 @@ class PropertyObject implements PropertyObjectInterface
     public function __get($key)
     {
         $methodName = 'get'.ucfirst($key);
-        if(in_array($key,['epcs','hips'])){
+        if (in_array($key,['epcs','hips'])) {
             $methodName = substr($methodName,0,-1);
             $methodName .='Entries';
         }
-        if(sizeof($this->internalMethods) == 0){
+        if (sizeof($this->internalMethods) == 0) {
             $methods = $this->reflector->getMethods(\ReflectionMethod::IS_PUBLIC);
-            foreach($methods as $k => $v){
+            foreach ($methods as $k => $v) {
                 $methods[$k] = $v->name;
             }
-            $methods = array_filter($methods,function(&$element){
+            $methods = array_filter($methods,function (&$element) {
                     return substr($element,0,2) !== '__';
                 });
             $this->internalMethods = $methods;
         }
-        if(in_array($methodName,$this->internalMethods)){
+        if (in_array($methodName,$this->internalMethods)) {
             return $this->{$methodName}();
         }
+
         return $this->attributes[$key];
     }
 
@@ -158,10 +159,10 @@ class PropertyObject implements PropertyObjectInterface
             $this->attributes,
             array_flip($this->internal['images'])
         );
-        foreach($imageArray as $k => $v){
+        foreach ($imageArray as $k => $v) {
             $imageCaptionKey = str_replace('mediaImage','mediaImageText',$k);
             $imageCaption = '';
-            if(array_key_exists($imageCaptionKey,$this->attributes)){
+            if (array_key_exists($imageCaptionKey,$this->attributes)) {
                 $imageCaption = $this->attributes[$imageCaption];
             }
             $imageArray[$k] = new MediaObject($v, $imageCaption);
@@ -189,16 +190,17 @@ class PropertyObject implements PropertyObjectInterface
             $this->attributes,
             array_flip($this->internal['epcs'])
         );
-        foreach($keyIntersects as $k => $v){
+        foreach ($keyIntersects as $k => $v) {
             $captionKey = str_replace('mediaImage','mediaImageText',$k);
             $captionKey = str_replace('mediaDocument','mediaDocumentText',$captionKey);
             $type = (strpos($k,'mediaDocument') ===false) ? 'Image' : 'Document';
-            if($this->{$captionKey} == 'EPC'){
+            if ($this->{$captionKey} == 'EPC') {
                 $keyIntersects[$k] = new MediaObject($v, $this->{$captionKey},$type);
             } else {
                 unset($keyIntersects[$k]);
             }
         }
+
         return  Collection::make($keyIntersects);
     }
 
@@ -207,7 +209,8 @@ class PropertyObject implements PropertyObjectInterface
      * @return Collection
      * @api
      */
-    public function getHipEntries(){
+    public function getHipEntries()
+    {
         //gets image keys if already calculated, otherwise calculates them.
         if (!isset($this->internal['epcs'])) {
             $imageKeys = array_filter(array_keys($this->attributes),
@@ -224,15 +227,16 @@ class PropertyObject implements PropertyObjectInterface
             $this->attributes,
             array_flip($this->internal['epcs'])
         );
-        foreach($keyIntersects as $k => $v){
+        foreach ($keyIntersects as $k => $v) {
             $captionKey = str_replace('mediaImage','mediaImageText',$k);
             $captionKey = str_replace('mediaDocument','mediaDocumentText',$captionKey);
-            if($this->{$captionKey} == 'HIP'){
+            if ($this->{$captionKey} == 'HIP') {
                 $keyIntersects[$k] = new MediaObject($v, $this->{$captionKey});
             } else {
                 unset($keyIntersects[$k]);
             }
         }
+
         return  Collection::make($keyIntersects);
     }
 
@@ -269,7 +273,8 @@ class PropertyObject implements PropertyObjectInterface
      * @return string
      * @api
      */
-    public function getStatusId(){
+    public function getStatusId()
+    {
         $map = [
             0 => 'Available',
             1 => 'SSTC',
@@ -278,6 +283,7 @@ class PropertyObject implements PropertyObjectInterface
             4 => 'Reserved',
             5 => 'Let Agreed'
         ];
+
         return $map[$this->attributes['statusId']];
     }
 
@@ -286,7 +292,8 @@ class PropertyObject implements PropertyObjectInterface
      * @return string
      * @api
      */
-    public function getPriceQualifier(){
+    public function getPriceQualifier()
+    {
         $map = [
             0 => "Default",
             1 => "POA",
@@ -301,6 +308,7 @@ class PropertyObject implements PropertyObjectInterface
             11 => "Part Buy Part Rent",
             12 => "Shared Equity"
         ];
+
         return $map[$this->attributes['priceQualifier']];
     }
 
@@ -309,11 +317,13 @@ class PropertyObject implements PropertyObjectInterface
      * @return string
      * @api
      */
-    public function getPublishedFlag(){
+    public function getPublishedFlag()
+    {
         $map = [
             0 => 'Hidden/invisible',
             1 => 'Visible'
         ];
+
         return $map[$this->attributes['publishedFlag']];
     }
 
@@ -322,7 +332,8 @@ class PropertyObject implements PropertyObjectInterface
      * @return string
      * @api
      */
-    public function getLetTypeId(){
+    public function getLetTypeId()
+    {
         $map = [
             0 => 'Not Specified',
             1 => 'Long Term',
@@ -330,6 +341,7 @@ class PropertyObject implements PropertyObjectInterface
             3 => 'Student',
             4 => 'Commercial'
         ];
+
         return $map[$this->attributes['letTypeId']];
     }
 
@@ -338,7 +350,8 @@ class PropertyObject implements PropertyObjectInterface
      * @return string
      * @api
      */
-    public function getLetFurnId(){
+    public function getLetFurnId()
+    {
         $map = [
             0 => "Furnished",
             1 => "Part Furnished",
@@ -346,6 +359,7 @@ class PropertyObject implements PropertyObjectInterface
             3 => "Not Specified",
             4 => "Furnished/Un Furnished"
         ];
+
         return $map[$this->attributes['letFurnId']];
     }
 
@@ -354,10 +368,11 @@ class PropertyObject implements PropertyObjectInterface
      * @return string
      * @api
      */
-    public function getLetRentFrequency(){
-        if(!array_key_exists('letRentFrequency',$this->attributes)){
+    public function getLetRentFrequency()
+    {
+        if (!array_key_exists('letRentFrequency',$this->attributes)) {
             return 'Price per Month';
-        } else if(strlen($this->attributes['letRentFrequency']) == 0){
+        } elseif (strlen($this->attributes['letRentFrequency']) == 0) {
             return 'Price per Month';
         }
         $map = [
@@ -367,6 +382,7 @@ class PropertyObject implements PropertyObjectInterface
             3 => "Annual",
             5 => "Per person per week"
         ];
+
         return $map[$this->attributes['letRentFrequency']];
     }
 
@@ -375,7 +391,8 @@ class PropertyObject implements PropertyObjectInterface
      * @return string
      * @api
      */
-    public function getTenureTypeId(){
+    public function getTenureTypeId()
+    {
         $map = [
             1 => "Freehold",
             2 => "Leasehold",
@@ -383,6 +400,7 @@ class PropertyObject implements PropertyObjectInterface
             4 => "Commonhold",
             5 => "Share of Freehold"
         ];
+
         return $map[$this->attributes['tenureTypeId']];
     }
 
@@ -391,11 +409,13 @@ class PropertyObject implements PropertyObjectInterface
      * @return string
      * @api
      */
-    public function getTransTypeId(){
+    public function getTransTypeId()
+    {
         $map = [
             1 => "Resale",
             2 => "Lettings"
         ];
+
         return $map[$this->attributes['transTypeId']];
     }
 

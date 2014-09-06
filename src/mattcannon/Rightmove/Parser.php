@@ -16,10 +16,10 @@ namespace mattcannon\Rightmove;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use mattcannon\Rightmove\Exceptions\InvalidBLMException;
+use mattcannon\Rightmove\Interfaces\BlmLoaderInterface;
 use mattcannon\Rightmove\Interfaces\ParserInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 
 /**
  * Class Parser
@@ -55,38 +55,27 @@ class Parser implements ParserInterface
      */
     protected $logger;
     /**
-     * Path to the BLM file to parse
-     * @var string|null
-     */
-    private $blmFilePath;
-    /**
      * String containing BLM data to parse
      * @var string|null
      */
     private $blmContents;
 
     /**
+     * BlmLoader which supplies content from strings, or files/zips/remotes etc. if another form is needed
+     * there is an interface that can be used and substituted in.
+     * @var BlmLoaderInterface $blmLoader
+     */
+    private $blmLoader;
+    /**
      * Create a new parser object. expects an psr complient logger to be passed in.
      * @api
      * @param LoggerInterface $logger
+     * @param BlmLoaderInterface $blmLoader
      */
-    public function __construct(LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger, BlmLoaderInterface $blmLoader)
     {
         $this->logger = $logger;
-    }
-
-    /**
-     * returns contents of blm file.
-     * @return string
-     * @codeCoverageIgnore
-     */
-    protected function getBlmFileContents()
-    {
-        if (is_null($this->getBlmContents())) {
-            $this->blmContents = implode('', file($this->blmFilePath));
-        }
-
-        return $this->blmContents;
+        $this->blmLoader = $blmLoader;
     }
     /**
      * Parses the BLM and returns a collection of PropertyObjects
@@ -97,27 +86,25 @@ class Parser implements ParserInterface
      */
     public function parseBlm()
     {
-        // Gets content of the BLM file.
-        if (is_null($this->getBlmContents())) {
-            if (is_null($this->getBlmFilePath())) {
-                throw new InvalidBLMException('No content received from BLM. you must either call $this->setBlmFilePath() or $this->setBlmContents()');
-            } else {
-                $this->logger->debug('Getting contents of BLM file.', ['filePath'=>$this->blmFilePath]);
-                $this->setBlmContents($this->getBlmFileContents());
-            }
+        // Gets content of the BLM.
+        if (is_null($this->blmLoader)) {
+            throw new Exception('No Blm Loader found - unable to parse blm');
         }
-        //Parses the header of the BLM file, and sets the version,eof, and eor instance variables for the parser.
-        $this->logger->debug('Parsing header of BLM file.', ['filePath'=>$this->blmFilePath]);
+        $this->logger->debug('Getting contents of BLM.');
+        $this->setBlmContents($this->blmLoader->getBlmContents());
+
+        //Parses the header of the BLM, and sets the version,eof, and eor instance variables for the parser.
+        $this->logger->debug('Parsing header of BLM file.');
         $this->parseHeader($this->getBlmContents());
 
         //Gets the titles from the field definitions
         /** @var array $fieldTitles */
-        $this->logger->debug('Parsing field titles of BLM file.', ['filePath'=>$this->blmFilePath]);
+        $this->logger->debug('Parsing field titles of BLM file.');
         $fieldTitles = $this->parseFields($this->getBlmContents());
 
         //Gets the property data from the Data section, and combines it with the field titles.
         /** @var \Illuminate\Support\Collection $properties */
-        $this->logger->debug('Parsing properties in BLM file.', ['filePath'=>$this->blmFilePath]);
+        $this->logger->debug('Parsing properties in BLM file.');
         $properties = $this->parseData($this->getBlmContents(), $fieldTitles);
 
         return $properties;
@@ -159,16 +146,13 @@ class Parser implements ParserInterface
         foreach ($rows as $row) {
             if (sizeof($row) !== sizeof($fieldTitles)) {
                 $this->logger->critical('BLM file definition mismatch', [
-                        'file'=>$this->blmFilePath,
                         'property'=>$row[0],
                         'expected field count'=>sizeof($fieldTitles),
                         'actual size'=>sizeof($row)
                     ]);
                 throw new InvalidBLMException(
                     'Property with ID:' . $row[0]
-                    .' contains a different number of fields, than the header definition. BLM:'
-                    . $this->blmFilePath
-                    . ' is invalid'
+                    .' contains a different number of fields, than the header definition.'
                 );
             }
             $finalRows[] = new PropertyObject(array_combine($fieldTitles, $row));
@@ -270,18 +254,24 @@ class Parser implements ParserInterface
     public function setBlmContents($blmContentString)
     {
         $this->blmContents = mb_convert_encoding($blmContentString,'UTF-8');
-        $this->blmFilePath = null;
     }
 
     /**
-     * Sets the path of the BLM file to parse - if called, will set blmContents to null.
-     * @param $filePath
-     * @api
+     * sets the BlmLoader, this is used to return the BLM data to parse
+     * @param BlmLoaderInterface $blmLoader
      */
-    public function setBlmFilePath($filePath)
+    public function setBlmLoader(BlmLoaderInterface $blmLoader)
     {
-        $this->blmFilePath = $filePath;
-        $this->blmContents = null;
+        $this->blmLoader = $blmLoader;
+    }
+
+    /**
+     * gets the BlmLoader to enable parsing of the blm
+     * @return BlmLoaderInterface $blmLoader
+     */
+    public function getBlmLoader()
+    {
+        return $this->blmLoader;
     }
     /**
      * returns the BLM data as a string to be parsed.
@@ -291,15 +281,6 @@ class Parser implements ParserInterface
     public function getBlmContents()
     {
         return $this->blmContents;
-    }
-    /**
-     * returns the file path to the BLM file as a string.
-     * @return string|null
-     * @api
-     */
-    public function getBlmFilePath()
-    {
-        return $this->blmFilePath;
     }
     /**
      * Sets a logger instance on the object

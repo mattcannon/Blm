@@ -46,10 +46,10 @@ class MediaObject implements MediaObjectInterface
      * Creates an instance of MediaObject
      * @param null|string $value
      * @param null|string $caption
-     * @param string $type
+     * @param string      $type
      * @api
      */
-    function __construct( $value, $caption = null, $type = 'Image')
+    public function __construct($value, $caption = null, $type = 'Image')
     {
         $this->value = $value;
         $this->caption = $caption;

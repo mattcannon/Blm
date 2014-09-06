@@ -47,27 +47,15 @@ interface ParserInterface extends \Psr\Log\LoggerAwareInterface
      * @throws Exceptions\InvalidBLMException
      */
     public function parseBlm();
-
     /**
-     * Sets the BLM data to parse - if called, will set blmFilePath to null.
+     * Sets the BLM data to parse
      * @param string $blmContentString
      */
     public function setBlmContents($blmContentString);
-
-    /**
-     * Sets the path of the BLM file to parse - if called, will set blmContents to null.
-     * @param string $filePath
-     */
-    public function setBlmFilePath($filePath);
     /**
      * returns the BLM data as a string to be parsed.
      * @return string|null
      */
     public function getBlmContents();
 
-    /**
-     * returns the file path to the BLM file as a string.
-     * @return string|null
-     */
-    public function getBlmFilePath();
 }

@@ -13,6 +13,7 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+use mattcannon\Rightmove\Loaders\BlmFileLoader;
 use mattcannon\Rightmove\Parser;
 
 /**
@@ -38,7 +39,7 @@ class ParserTest extends Base
      */
     public function setUp()
     {
-        $this->parser = new Parser(new \Psr\Log\NullLogger());
+        $this->parser = new Parser(new \Psr\Log\NullLogger(), new \mattcannon\Rightmove\Loaders\BlmTestLoader());
 
         $this->testClass = $this->parser;
         parent::setUp();
@@ -72,20 +73,9 @@ BLM;
      */
     public function testCanConstructParser()
     {
-        $parser = new Parser(new \Psr\Log\NullLogger());
+        $parser = new Parser(new \Psr\Log\NullLogger(),new \mattcannon\Rightmove\Loaders\BlmTestLoader());
         $this->assertTrue(get_class($parser)=='mattcannon\Rightmove\Parser');
     }
-
-    /**
-     * test that a parser can receive file paths correctly
-     */
-    public function testCanSetPathCorrectly()
-    {
-        $parser = new Parser(new \Psr\Log\NullLogger());
-        $parser->setBlmFilePath('withPath');
-        $this->assertTrue($parser->getBlmFilePath() == 'withPath');
-    }
-
     /**
      * tests that the parser can interpret the version field of the file
      * @throws mattcannon\Rightmove\Exceptions\InvalidBLMException
@@ -182,12 +172,12 @@ BLM;
      */
     public function testCanParseFile()
     {
-
-        $oClass = $this->getMock('mattcannon\Rightmove\Parser', array('getBlmFileContents'),array(new \Psr\Log\NullLogger()),'');
-        $oClass->expects($this->any())->method('getBlmFileContents')->will($this->returnValue($this->validDocument));
-        $oClass->setBlmFilePath('anyPath');
-        $result = $oClass->parseBlm();
-        $this->assertTrue(sizeof($result)==1);
+        $path = dirname(dirname(dirname(__DIR__))).'/testBlmFiles';
+        $adapter = new \League\Flysystem\Adapter\Local($path);
+        $loader = new BlmFileLoader(new League\Flysystem\Filesystem($adapter),'overseasTestFile.blm');
+        $parser = new Parser(new \Psr\Log\NullLogger(),$loader);
+        $result = $parser->parseBlm();
+        $this->assertTrue(sizeof($result)>1);
     }
 
     /**

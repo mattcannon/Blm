@@ -79,7 +79,7 @@ interface PropertyObjectInterface extends \JsonSerializable
      * Specify data which should be serialized to JSON
      * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
      * @return mixed data which can be serialized by __json_encode__,
-     * which is a value of any type other than a resource.
+     *               which is a value of any type other than a resource.
      * @api
      */
     public function jsonSerialize();
