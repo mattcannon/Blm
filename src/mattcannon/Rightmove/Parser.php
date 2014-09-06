@@ -64,13 +64,15 @@ class Parser implements ParserInterface
      * @var string|null
      */
     private $blmContents;
+
     /**
-     * Create a new parser object.
+     * Create a new parser object. expects an psr complient logger to be passed in.
      * @api
+     * @param LoggerInterface $logger
      */
-    public function __construct()
+    public function __construct(LoggerInterface $logger)
     {
-        $this->logger = new NullLogger();
+        $this->logger = $logger;
     }
 
     /**

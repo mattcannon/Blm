@@ -1,4 +1,18 @@
 <?php
+
+/**
+ * The MIT License (MIT)
+ * Copyright (c) 2014 Matt Cannon
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
+ * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 use mattcannon\Rightmove\Parser;
 
 /**
@@ -24,7 +38,7 @@ class ParserTest extends Base
      */
     public function setUp()
     {
-        $this->parser = new Parser();
+        $this->parser = new Parser(new \Psr\Log\NullLogger());
 
         $this->testClass = $this->parser;
         parent::setUp();
@@ -58,7 +72,7 @@ BLM;
      */
     public function testCanConstructParser()
     {
-        $parser = new Parser();
+        $parser = new Parser(new \Psr\Log\NullLogger());
         $this->assertTrue(get_class($parser)=='mattcannon\Rightmove\Parser');
     }
 
@@ -67,7 +81,7 @@ BLM;
      */
     public function testCanSetPathCorrectly()
     {
-        $parser = new Parser();
+        $parser = new Parser(new \Psr\Log\NullLogger());
         $parser->setBlmFilePath('withPath');
         $this->assertTrue($parser->getBlmFilePath() == 'withPath');
     }
@@ -169,7 +183,7 @@ BLM;
     public function testCanParseFile()
     {
 
-        $oClass = $this->getMock('mattcannon\Rightmove\Parser', array('getBlmFileContents'),array('./testPath'));
+        $oClass = $this->getMock('mattcannon\Rightmove\Parser', array('getBlmFileContents'),array(new \Psr\Log\NullLogger()),'');
         $oClass->expects($this->any())->method('getBlmFileContents')->will($this->returnValue($this->validDocument));
         $oClass->setBlmFilePath('anyPath');
         $result = $oClass->parseBlm();

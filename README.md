@@ -19,7 +19,7 @@ To install this package using composer, run:
  To access the data in the BLM, you should call ```parseBlm()```.
  
  ```php
- $parser = new \mattcannon\Rightmove\Parser;
+ $parser = new \mattcannon\Rightmove\Parser(new \Psr\Log\NullLogger());
  $parser->setBlmFilePath('/path/to/blm/file');
  $data = $parser->parseBlm();
  
