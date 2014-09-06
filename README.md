@@ -19,8 +19,9 @@ To install this package using composer, run:
  To access the data in the BLM, you should call ```parseBlm()```.
  
  ```php
- $parser = new \mattcannon\Rightmove\Parser(new \Psr\Log\NullLogger());
- $parser->setBlmFilePath('/path/to/blm/file');
+ $adapter = new \League\Flysystem\Adapter\Local('/data/');
+ $loader = new BlmFileLoader(new League\Flysystem\Filesystem($adapter),'BlmFile.blm');
+ $parser = new \mattcannon\Rightmove\Parser(new \Psr\Log\NullLogger(),$loader);
  $data = $parser->parseBlm();
  
  foreach($data as $property){
