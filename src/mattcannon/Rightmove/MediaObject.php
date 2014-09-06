@@ -14,11 +14,14 @@
 
 namespace mattcannon\Rightmove;
 
+use mattcannon\Rightmove\Interfaces\MediaObjectInterface;
+
 /**
  * Class MediaObject
  * @package mattcannon\Rightmove
  */
-class MediaObject {
+class MediaObject implements MediaObjectInterface
+{
 
     /**
      * stores the value of the main field
@@ -33,7 +36,7 @@ class MediaObject {
      */
     public $caption;
     /**
-     * stores Media object type (Image | Document   )
+     * stores Media object type (Image | Document)
      * @var string
      * @api
      */
@@ -52,4 +55,53 @@ class MediaObject {
         $this->caption = $caption;
         $this->type = $type;
     }
+
+    /**
+     * @return null|string
+     */
+    public function getCaption()
+    {
+        return $this->caption;
+    }
+
+    /**
+     * @param null|string $caption
+     */
+    public function setCaption($caption)
+    {
+        $this->caption = $caption;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
+     * @param null|string $value
+     */
+    public function setValue($value)
+    {
+        $this->value = $value;
+    }
+
 }
