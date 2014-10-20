@@ -1,4 +1,4 @@
-#mattcannon\rightmove
+#MattCannon\Blm
 Rightmove BLM parser for PHP - Please see (http://mattcannon.github.io/rightmove/)[http://mattcannon.github.io/rightmove/]
 
 ##Current Status
@@ -21,7 +21,7 @@ To install this package using composer, run:
  ```php
  $adapter = new \League\Flysystem\Adapter\Local('/data/');
  $loader = new BlmFileLoader(new League\Flysystem\Filesystem($adapter),'BlmFile.blm');
- $parser = new \mattcannon\Rightmove\Parser(new \Psr\Log\NullLogger(),$loader);
+ $parser = new \MattCannon\Blm\Parser(new \Psr\Log\NullLogger(),$loader);
  $data = $parser->parseBlm();
  
  foreach($data as $property){

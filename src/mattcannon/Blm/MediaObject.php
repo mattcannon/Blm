@@ -12,13 +12,13 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace mattcannon\Rightmove;
+namespace MattCannon\Blm;
 
-use mattcannon\Rightmove\Interfaces\MediaObjectInterface;
+use MattCannon\Blm\Interfaces\MediaObjectInterface;
 
 /**
  * Class MediaObject
- * @package mattcannon\Rightmove
+ * @package MattCannon\Blm
  */
 class MediaObject implements MediaObjectInterface
 {

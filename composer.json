@@ -16,7 +16,7 @@
     ],
     "autoload" :{
         "psr-4":{
-            "mattcannon\\" : "src/mattcannon/"
+            "MattCannon\\" : "src/MattCannon/"
         }
     },
     "autoload-dev":{

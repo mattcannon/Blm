@@ -11,51 +11,34 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-namespace mattcannon\Rightmove\Interfaces;
 
-use mattcannon\Rightmove\Exceptions;
-use Illuminate\Support\Collection;
+namespace MattCannon\Blm\Loaders;
+
+use MattCannon\Blm\Interfaces\BlmLoaderInterface;
 
 /**
- * Interface ParserInterface
- *
- * To use the parser you should create a new instance of the Parser class, then set the BLM contents, or pass in a file path to a BLM.
- * To access the data in the BLM, you should call ```parseBlm()```.
- *
- * ```php
- * $parser = new \mattcannon\Rightmove\Parser;
- * $parser->setBlmFilePath('/path/to/blm/file');
- *
- * $data = $parser->parseBlm();
- *
- * foreach ($data as $property) {
- *      var_dump($property);
- * }
- * ```
- *
- * @package mattcannon\Rightmove\Interfaces
- * @author Matt Cannon
- *
+ * Class BlmStringLoader
+ * @package MattCannon\Blm\Loaders
  */
-interface ParserInterface extends \Psr\Log\LoggerAwareInterface
+class BlmStringLoader implements BlmLoaderInterface
 {
+    /**
+     * @var string - contents of blm
+     */
+    private $blmContents;
 
     /**
-     * Parses the BLM and returns a collection of PropertyObjects
-     * @return Collection
-     * @throws
-     * @throws Exceptions\InvalidBLMException
+     * @param string $blmContents - contents of blm to be parsed
      */
-    public function parseBlm();
+    public function __construct($blmContents)
+    {
+        $this->blmContents = $blmContents;
+    }
     /**
-     * Sets the BLM data to parse
-     * @param string $blmContentString
+     * @return string contents of blm
      */
-    public function setBlmContents($blmContentString);
-    /**
-     * returns the BLM data as a string to be parsed.
-     * @return string|null
-     */
-    public function getBlmContents();
-
+    public function getBlmContents()
+    {
+        return $this->blmContents;
+    }
 }

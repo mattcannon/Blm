@@ -13,8 +13,8 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-use mattcannon\Rightmove\Loaders\BlmFileLoader;
-use mattcannon\Rightmove\Parser;
+use MattCannon\Blm\Loaders\BlmFileLoader;
+use MattCannon\Blm\Parser;
 
 /**
  * Created by PhpStorm.
@@ -26,7 +26,7 @@ use mattcannon\Rightmove\Parser;
 class ParserTest extends Base
 {
     /**
-     * @var mattcannon\Rightmove\Parser;
+     * @var MattCannon\Blm\Parser;
      */
     protected $parser;
     /**
@@ -39,7 +39,7 @@ class ParserTest extends Base
      */
     public function setUp()
     {
-        $this->parser = new Parser(new \Psr\Log\NullLogger(), new \mattcannon\Rightmove\Loaders\BlmTestLoader());
+        $this->parser = new Parser(new \Psr\Log\NullLogger(), new \MattCannon\Blm\Loaders\BlmTestLoader());
 
         $this->testClass = $this->parser;
         parent::setUp();
@@ -73,12 +73,12 @@ BLM;
      */
     public function testCanConstructParser()
     {
-        $parser = new Parser(new \Psr\Log\NullLogger(),new \mattcannon\Rightmove\Loaders\BlmTestLoader());
-        $this->assertTrue(get_class($parser)=='mattcannon\Rightmove\Parser');
+        $parser = new Parser(new \Psr\Log\NullLogger(),new \MattCannon\Blm\Loaders\BlmTestLoader());
+        $this->assertTrue(get_class($parser)=='MattCannon\Blm\Parser');
     }
     /**
      * tests that the parser can interpret the version field of the file
-     * @throws mattcannon\Rightmove\Exceptions\InvalidBLMException
+     * @throws MattCannon\Blm\Exceptions\InvalidBLMException
      */
     public function testCanParseHeaderVersion()
     {
@@ -89,7 +89,7 @@ BLM;
 
     /**
      * tests that the parser can interpret the end of row property correctly
-     * @throws mattcannon\Rightmove\Exceptions\InvalidBLMException
+     * @throws MattCannon\Blm\Exceptions\InvalidBLMException
      */
     public function testCanParseHeaderEOR()
     {
@@ -100,7 +100,7 @@ BLM;
 
     /**
      * tests that the parser can interpret the end of field property correctly
-     * @throws mattcannon\Rightmove\Exceptions\InvalidBLMException
+     * @throws MattCannon\Blm\Exceptions\InvalidBLMException
      */
     public function testCanParseHeaderEOF()
     {
@@ -111,7 +111,7 @@ BLM;
 
     /**
      * test that an exception is thrown if there isn't a version number set
-     * @expectedException mattcannon\Rightmove\Exceptions\InvalidBLMException
+     * @expectedException MattCannon\Blm\Exceptions\InvalidBLMException
      */
     public function testDoesThrowExceptionForMissingVersion()
     {
@@ -121,7 +121,7 @@ BLM;
     }
     /**
      * test that an exception is thrown if there isn't an EOR delimiter set
-     * @expectedException mattcannon\Rightmove\Exceptions\InvalidBLMException
+     * @expectedException MattCannon\Blm\Exceptions\InvalidBLMException
      */
     public function testDoesThrowExceptionForMissingEor()
     {
@@ -131,7 +131,7 @@ BLM;
     }
     /**
      * test that an exception is thrown if there isn't an EOF delimiter set
-     * @expectedException mattcannon\Rightmove\Exceptions\InvalidBLMException
+     * @expectedException MattCannon\Blm\Exceptions\InvalidBLMException
      */
     public function testDoesThrowExceptionForMissingEof()
     {
@@ -153,7 +153,7 @@ BLM;
 
     /**
      * tests that the parser correctly parses a document into the correct number of properties.
-     * @throws mattcannon\Rightmove\Exceptions\InvalidBLMException
+     * @throws MattCannon\Blm\Exceptions\InvalidBLMException
      */
     public function testCanParseData()
     {
@@ -182,7 +182,7 @@ BLM;
 
     /**
      * tests that the parser can correctly parse an injected string.
-     * @throws mattcannon\Rightmove\Exceptions\InvalidBLMException
+     * @throws MattCannon\Blm\Exceptions\InvalidBLMException
      */
     public function testCanParseBlmContentOnly()
     {
@@ -192,7 +192,7 @@ BLM;
     }
     /**
      * tests that the parser correctly throws an error if there is a mismatch between fields defined, and parsed.
-     * @expectedException mattcannon\Rightmove\Exceptions\InvalidBLMException
+     * @expectedException MattCannon\Blm\Exceptions\InvalidBLMException
      */
     public function testDoesThrowExceptionForFieldCountMismatch()
     {

@@ -12,19 +12,19 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace mattcannon\Rightmove;
+namespace MattCannon\Blm;
 
 use Illuminate\Support\Collection;
-use mattcannon\Rightmove\Interfaces\PropertyObjectInterface;
+use MattCannon\Blm\Interfaces\PropertyObjectInterface;
 
 /**
  * Class PropertyObject
  *
- * Please see documentation for [mattcannon\Rightmove\Interfaces\PropertyObjectInterface](mattcannon.Rightmove.interfaces.PropertyObjectInterface.html) to see how
+ * Please see documentation for [MattCannon\Blm\Interfaces\PropertyObjectInterface](mattcannon.Rightmove.interfaces.PropertyObjectInterface.html) to see how
  * this should be used. Any Methods not listed in PropertyObjectInterface, or JsonSerializable
  * are not considered public API, and may change without notice.
  *
- * @package mattcannon\Rightmove
+ * @package MattCannon\Blm
  * @property \Illuminate\Support\Collection $features
  * @property \Illuminate\Support\Collection $images
  * @property \Illuminate\Support\Collection $epcs

@@ -11,16 +11,51 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-namespace mattcannon\Rightmove\Interfaces;
+namespace MattCannon\Blm\Interfaces;
+
+use MattCannon\Blm\Exceptions;
+use Illuminate\Support\Collection;
 
 /**
- * Class BlmLoaderInterface
- * @package mattcannon\Rightmove\Interfaces
+ * Interface ParserInterface
+ *
+ * To use the parser you should create a new instance of the Parser class, then set the BLM contents, or pass in a file path to a BLM.
+ * To access the data in the BLM, you should call ```parseBlm()```.
+ *
+ * ```php
+ * $parser = new \MattCannon\Blm\Parser;
+ * $parser->setBlmFilePath('/path/to/blm/file');
+ *
+ * $data = $parser->parseBlm();
+ *
+ * foreach ($data as $property) {
+ *      var_dump($property);
+ * }
+ * ```
+ *
+ * @package MattCannon\Blm\Interfaces
+ * @author Matt Cannon
+ *
  */
-interface BlmLoaderInterface
+interface ParserInterface extends \Psr\Log\LoggerAwareInterface
 {
+
     /**
-     * @return string contents of blm
+     * Parses the BLM and returns a collection of PropertyObjects
+     * @return Collection
+     * @throws
+     * @throws Exceptions\InvalidBLMException
+     */
+    public function parseBlm();
+    /**
+     * Sets the BLM data to parse
+     * @param string $blmContentString
+     */
+    public function setBlmContents($blmContentString);
+    /**
+     * returns the BLM data as a string to be parsed.
+     * @return string|null
      */
     public function getBlmContents();
+
 }

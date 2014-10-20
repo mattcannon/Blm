@@ -13,7 +13,7 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-use mattcannon\Rightmove\Loaders\BlmFileLoader;
+use MattCannon\Blm\Loaders\BlmFileLoader;
 
 class BlmFileLoaderTest extends Base
 {

@@ -12,13 +12,13 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace mattcannon\Rightmove\Loaders;
+namespace MattCannon\Blm\Loaders;
 
 /**
  * Class BlmTestLoader
- * @package mattcannon\Rightmove\Loaders
+ * @package MattCannon\Blm\Loaders
  */
-class BlmTestLoader implements \mattcannon\Rightmove\Interfaces\BlmLoaderInterface
+class BlmTestLoader implements \MattCannon\Blm\Interfaces\BlmLoaderInterface
 {
     /**
      * @return string contents of blm

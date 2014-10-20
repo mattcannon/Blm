@@ -11,44 +11,41 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-namespace mattcannon\Rightmove\Loaders;
-
-use League\Flysystem\Filesystem;
-use mattcannon\Rightmove\Interfaces\BlmLoaderInterface;
+namespace MattCannon\Blm\Interfaces;
 
 /**
- * Class BlmFileLoader
- * @package mattcannon\Rightmove\Loaders
+ * Class MediaObject
+ * @package MattCannon\Blm
  */
-class BlmFileLoader implements BlmLoaderInterface
+interface MediaObjectInterface
 {
     /**
-     * @var Filesystem
+     * @return null|string
      */
-    private $fileSystem;
-    /**
-     * @var string - path to blm, relative to path set against filesystem object.
-     */
-    private $pathToBlm;
+    public function getCaption();
 
     /**
-     * @param Filesystem $fileSystem
-     * @param $pathToBlm
+     * @param null|string $caption
      */
-    public function __construct(Filesystem $fileSystem, $pathToBlm)
-    {
-        $this->fileSystem = $fileSystem;
-        $this->pathToBlm = $pathToBlm;
-    }
+    public function setCaption($caption);
+
     /**
-     * @return string contents of blm
+     * @return string
      */
-    public function getBlmContents()
-    {
-        $blmContents = $this->fileSystem->read($this->pathToBlm);
+    public function getType();
 
-        return $blmContents;
-    }
+    /**
+     * @param string $type
+     */
+    public function setType($type);
 
+    /**
+     * @return null|string
+     */
+    public function getValue();
+
+    /**
+     * @param null|string $value
+     */
+    public function setValue($value);
 }

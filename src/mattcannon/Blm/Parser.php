@@ -11,25 +11,25 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-namespace mattcannon\Rightmove;
+namespace MattCannon\Blm;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use mattcannon\Rightmove\Exceptions\InvalidBLMException;
-use mattcannon\Rightmove\Interfaces\BlmLoaderInterface;
-use mattcannon\Rightmove\Interfaces\ParserInterface;
+use MattCannon\Blm\Exceptions\InvalidBLMException;
+use MattCannon\Blm\Interfaces\BlmLoaderInterface;
+use MattCannon\Blm\Interfaces\ParserInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 
 /**
  * Class Parser
  *
- * Please see documentation for [mattcannon\Rightmove\Interfaces\ParserInterface](mattcannon.Rightmove.interfaces.ParserInterface.html) to see how
+ * Please see documentation for [MattCannon\Blm\Interfaces\ParserInterface](mattcannon.Rightmove.interfaces.ParserInterface.html) to see how
  * this should be used. Any Methods not listed in ParserInterface, or LoggerAwareInterface
  * are not considered public API, and may change without notice.
  *
  * @link mattcannon.Rightmove.interfaces.ParserInterface.html
- * @package mattcannon\Rightmove
+ * @package MattCannon\Blm
  * @author Matt Cannon
  */
 class Parser implements ParserInterface

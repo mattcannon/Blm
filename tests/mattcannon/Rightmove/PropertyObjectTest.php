@@ -39,7 +39,7 @@ class PropertyObjectTest extends Base
             'feature3'=>'',
             'propertyName' => 'test name'
         ];
-        $this->testClass = new \mattcannon\Rightmove\PropertyObject($propertyArray);
+        $this->testClass = new \MattCannon\Blm\PropertyObject($propertyArray);
         parent::setUp();
     }
 

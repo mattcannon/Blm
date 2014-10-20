@@ -11,7 +11,7 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-namespace mattcannon\Rightmove\Interfaces;
+namespace MattCannon\Blm\Interfaces;
 
 use Illuminate\Support\Collection;
 
@@ -30,7 +30,7 @@ use Illuminate\Support\Collection;
  * $epcs = $property->getEpcEntries();
  * ```
  *
- * @package mattcannon\Rightmove\Interfaces
+ * @package MattCannon\Blm\Interfaces
  * @property \Illuminate\Support\Collection $features
  * @property \Illuminate\Support\Collection $images
  * @property \Illuminate\Support\Collection $epcs

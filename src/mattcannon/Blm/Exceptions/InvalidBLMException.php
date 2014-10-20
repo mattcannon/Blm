@@ -6,11 +6,11 @@
  * Time: 20:47
  */
 
-namespace mattcannon\Rightmove\Exceptions;
+namespace MattCannon\Blm\Exceptions;
 
 /**
  * Class InvalidBLMException
- * @package mattcannon\Rightmove\Exceptions
+ * @package MattCannon\Blm\Exceptions
  */
 class InvalidBLMException extends \Exception
 {
