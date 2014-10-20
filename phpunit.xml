@@ -22,7 +22,7 @@
         strict="false"
         verbose="false">
     <testsuites>
-        <testsuite name="rightmove">
+        <testsuite name="Blm">
             <directory>tests</directory>
         </testsuite>
     </testsuites>
