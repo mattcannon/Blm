@@ -2,8 +2,8 @@
 Rightmove BLM parser for PHP - Please see (http://mattcannon.github.io/rightmove/)[http://mattcannon.github.io/rightmove/]
 
 ##Current Status
-* Master:[![Build Status](https://travis-ci.org/mattcannon/rightmove.svg?branch=master)](https://travis-ci.org/mattcannon/rightmove)
-* Develop:[![Build Status](https://travis-ci.org/mattcannon/rightmove.svg?branch=develop)](https://travis-ci.org/mattcannon/rightmove)
+* Master:[![Build Status](https://travis-ci.org/mattcannon/Blm.svg?branch=master)](https://travis-ci.org/mattcannon/Blm)
+* Develop:[![Build Status](https://travis-ci.org/mattcannon/Blm.svg?branch=develop)](https://travis-ci.org/mattcannon/Blm)
 
 ##Requirements
 * PHP 5.4+
@@ -40,6 +40,6 @@ echo $property->price;
 
 ##Public API
 To see a full list of all public methods, please look at the interface 
-files in src/mattcannon/Rightmove/Interfaces - if a method isn't listed 
+files in src/MattCannon/Blm/Interfaces - if a method isn't listed 
 in these files, then it may disappear or change it's behavior without notice.
 
