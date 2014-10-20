@@ -11,7 +11,7 @@ Rightmove BLM parser for PHP - Please see (http://mattcannon.github.io/rightmove
 ##Installation
 ###Composer
 To install this package using composer, run:
-```composer require mattcannon/Rightmove:0.1.*```
+```composer require MattCannon/Blm:0.1.*```
 
 ##Usage
  To use the parser you should create a new instance of the Parser class, then set 
