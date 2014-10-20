@@ -2,5 +2,8 @@ vendor/*
 composer.lock
 index.php
 *.blm
+!testBlmFiles/overseasTestFile.blm
 .idea/*
 *.log
+docs/*
+_site/*

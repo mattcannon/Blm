@@ -3,7 +3,7 @@
         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.1/phpunit.xsd"
         backupGlobals="true"
         backupStaticAttributes="false"
-	bootstrap="./vendor/autoload.php"
+        bootstrap="./vendor/autoload.php"
         cacheTokens="false"
         colors="true"
         convertErrorsToExceptions="true"
@@ -22,7 +22,7 @@
         strict="false"
         verbose="false">
     <testsuites>
-        <testsuite name="rightmove">
+        <testsuite name="Blm">
             <directory>tests</directory>
         </testsuite>
     </testsuites>

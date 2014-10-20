@@ -1,25 +1,38 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: matt
- * Date: 07/05/2014
- * Time: 19:42
+ * The MIT License (MIT)
+ * Copyright (c) 2014 Matt Cannon
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
+ * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-namespace mattcannon\Rightmove;
+namespace MattCannon\Blm;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use mattcannon\Rightmove\Exceptions\InvalidBLMException;
+use MattCannon\Blm\Exceptions\InvalidBLMException;
+use MattCannon\Blm\Interfaces\BlmLoaderInterface;
+use MattCannon\Blm\Interfaces\ParserInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 
 /**
  * Class Parser
- * @package mattcannon\Rightmove
+ *
+ * Please see documentation for [MattCannon\Blm\Interfaces\ParserInterface](mattcannon.Rightmove.interfaces.ParserInterface.html) to see how
+ * this should be used. Any Methods not listed in ParserInterface, or LoggerAwareInterface
+ * are not considered public API, and may change without notice.
+ *
+ * @link mattcannon.Rightmove.interfaces.ParserInterface.html
+ * @package MattCannon\Blm
+ * @author Matt Cannon
  */
-class Parser implements LoggerAwareInterface
+class Parser implements ParserInterface
 {
     /**
      * The version specified in the BLM header
@@ -42,78 +55,66 @@ class Parser implements LoggerAwareInterface
      */
     protected $logger;
     /**
-     * Path to the BLM file to parse
-     * @var null|string
+     * String containing BLM data to parse
+     * @var string|null
      */
-    private $filePath;
-    /**
-     *
-     * @var string
-     */
-    private $fileContents;
-    /**
-     * Create a new parser object - expects a file path to a BLM.
-     * @param null|string $filePath
-     */
-    public function __construct($filePath = null)
-    {
-        $this->filePath = $filePath;
-        $this->logger = new NullLogger();
-    }
+    private $blmContents;
 
     /**
-     * @return null|string
+     * BlmLoader which supplies content from strings, or files/zips/remotes etc. if another form is needed
+     * there is an interface that can be used and substituted in.
+     * @var BlmLoaderInterface $blmLoader
      */
-    public function getFilePath()
-    {
-        return $this->filePath;
-    }
-
+    private $blmLoader;
     /**
-     * returns contents of blm file.
-     * @return string
-     * @codeCoverageIgnore
+     * Create a new parser object. expects an psr complient logger to be passed in.
+     * @api
+     * @param LoggerInterface $logger
+     * @param BlmLoaderInterface $blmLoader
      */
-    protected function getBlmFileContents()
+    public function __construct(LoggerInterface $logger, BlmLoaderInterface $blmLoader)
     {
-        if(is_null($this->fileContents)){
-            $this->fileContents = implode('', file($this->filePath));
-        }
-        return $this->fileContents;
+        $this->logger = $logger;
+        $this->blmLoader = $blmLoader;
     }
     /**
      * Parses the BLM and returns a collection of PropertyObjects
-     * @return Collection
+     * @return \Illuminate\Support\Collection
      * @throws
      * @throws Exceptions\InvalidBLMException
+     * @api
      */
-    public function parseFile()
+    public function parseBlm()
     {
-        // Gets content of the BLM file.
-        $this->logger->debug('Getting contents of BLM file.', ['filePath'=>$this->filePath]);
-        $fileContents = $this->getBlmFileContents();
-        //Parses the header of the BLM file, and sets the version,eof, and eor instance variables for the parser.
-        $this->logger->debug('Parsing header of BLM file.', ['filePath'=>$this->filePath]);
-        $this->parseHeader($fileContents);
+        // Gets content of the BLM.
+        if (is_null($this->blmLoader)) {
+            throw new Exception('No Blm Loader found - unable to parse blm');
+        }
+        $this->logger->debug('Getting contents of BLM.');
+        $this->setBlmContents($this->blmLoader->getBlmContents());
+
+        //Parses the header of the BLM, and sets the version,eof, and eor instance variables for the parser.
+        $this->logger->debug('Parsing header of BLM file.');
+        $this->parseHeader($this->getBlmContents());
 
         //Gets the titles from the field definitions
         /** @var array $fieldTitles */
-        $this->logger->debug('Parsing field titles of BLM file.', ['filePath'=>$this->filePath]);
-        $fieldTitles = $this->parseFields($fileContents);
+        $this->logger->debug('Parsing field titles of BLM file.');
+        $fieldTitles = $this->parseFields($this->getBlmContents());
 
         //Gets the property data from the Data section, and combines it with the field titles.
         /** @var \Illuminate\Support\Collection $properties */
-        $this->logger->debug('Parsing properties in BLM file.', ['filePath'=>$this->filePath]);
-        $properties = $this->parseData($fileContents, $fieldTitles);
+        $this->logger->debug('Parsing properties in BLM file.');
+        $properties = $this->parseData($this->getBlmContents(), $fieldTitles);
 
         return $properties;
     }
 
     /**
      * get the Data section of the BLM, and convert it to a Collection of PropertyObjects
-     * @param  string              $fileContents
-     * @param  array               $fieldTitles
-     * @return Collection
+     * @param  string                         $fileContents
+     * @param  array                          $fieldTitles
+     * @return \Illuminate\Support\Collection
      * @throws InvalidBLMException
      */
     public function parseData($fileContents, array $fieldTitles)
@@ -145,16 +146,13 @@ class Parser implements LoggerAwareInterface
         foreach ($rows as $row) {
             if (sizeof($row) !== sizeof($fieldTitles)) {
                 $this->logger->critical('BLM file definition mismatch', [
-                        'file'=>$this->filePath,
                         'property'=>$row[0],
                         'expected field count'=>sizeof($fieldTitles),
                         'actual size'=>sizeof($row)
                     ]);
                 throw new InvalidBLMException(
                     'Property with ID:' . $row[0]
-                    .' contains a different number of fields, than the header definition. BLM:'
-                    . $this->filePath
-                    . ' is invalid'
+                    .' contains a different number of fields, than the header definition.'
                 );
             }
             $finalRows[] = new PropertyObject(array_combine($fieldTitles, $row));
@@ -249,10 +247,47 @@ class Parser implements LoggerAwareInterface
     }
 
     /**
+     * Sets the BLM data to parse - if called, will set blmFilePath to null.
+     * @param $blmContentString
+     * @api
+     */
+    public function setBlmContents($blmContentString)
+    {
+        $this->blmContents = mb_convert_encoding($blmContentString,'UTF-8');
+    }
+
+    /**
+     * sets the BlmLoader, this is used to return the BLM data to parse
+     * @param BlmLoaderInterface $blmLoader
+     */
+    public function setBlmLoader(BlmLoaderInterface $blmLoader)
+    {
+        $this->blmLoader = $blmLoader;
+    }
+
+    /**
+     * gets the BlmLoader to enable parsing of the blm
+     * @return BlmLoaderInterface $blmLoader
+     */
+    public function getBlmLoader()
+    {
+        return $this->blmLoader;
+    }
+    /**
+     * returns the BLM data as a string to be parsed.
+     * @return string|null
+     * @api
+     */
+    public function getBlmContents()
+    {
+        return $this->blmContents;
+    }
+    /**
      * Sets a logger instance on the object
      *
      * @param  LoggerInterface $logger
      * @return null
+     * @api
      * @codeCoverageIgnore
      */
     public function setLogger(LoggerInterface $logger)
