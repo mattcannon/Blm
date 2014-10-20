@@ -1,5 +1,5 @@
 {
-    "name": "MattCannon/Blm",
+    "name": "matt-cannon/blm",
     "description": "Rightmove BLM Parser",
     "require": {
         "illuminate/support": "4.*",
