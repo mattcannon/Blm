@@ -163,7 +163,7 @@ class PropertyObject implements PropertyObjectInterface
             $imageCaptionKey = str_replace('mediaImage','mediaImageText',$k);
             $imageCaption = '';
             if (array_key_exists($imageCaptionKey,$this->attributes)) {
-                $imageCaption = $this->attributes[$imageCaption];
+                $imageCaption = $this->attributes[$imageCaptionKey];
             }
             $imageArray[$k] = new MediaObject($v, $imageCaption);
         }

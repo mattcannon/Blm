@@ -29,6 +29,7 @@ class PropertyObjectTest extends Base
             'tenureTypeId' => 1,
             'transTypeId' => 1,
             'mediaImage01'=>'image1',
+            'mediaImageText01'=>'Image Caption',
             'mediaImage02'=>'image2',
             'mediaImage03'=>'image3',
             'mediaImage04'=>'',
@@ -77,6 +78,15 @@ class PropertyObjectTest extends Base
     {
         $result = $this->testClass->images;
         $this->assertEquals(3,sizeof($result));
+    }
+
+    /**
+     * tests images getter can get caption
+     */
+    public function testCanGetImagesCaption()
+    {
+        $result = $this->testClass->images->first();
+        $this->assertEquals($result->getCaption(), 'Image Caption');
     }
 
     /**
