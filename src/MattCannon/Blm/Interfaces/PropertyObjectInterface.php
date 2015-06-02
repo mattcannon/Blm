@@ -73,6 +73,13 @@ interface PropertyObjectInterface extends \JsonSerializable
      * @api
      */
     public function getEpcEntries();
+    
+    /**
+     * Get all non-empty floorplan properties as a collection
+     * @return Collection
+     * @api
+     */
+    public function getFloorplanEntries();
 
     /**
      * (PHP 5 >= 5.4.0)
