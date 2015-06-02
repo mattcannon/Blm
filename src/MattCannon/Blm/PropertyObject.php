@@ -203,6 +203,38 @@ class PropertyObject implements PropertyObjectInterface
 
         return  Collection::make($keyIntersects);
     }
+    
+    /**
+     * Get all non-empty floorplan properties as a collection
+     * @return Collection
+     * @api
+     */
+    public function getFloorplanEntries()
+    {
+        //gets image keys if already calculated, otherwise calculates them.
+
+        if (!isset($this->internal['floorplans'])) {
+            $imageKeys = array_filter(array_keys($this->attributes), function (&$element) {
+                    return (preg_match('/mediaFloorPlan0[0-1]/',$element));
+                });
+            $this->internal['floorplans'] = $imageKeys;
+        }
+        $keyIntersects = array_intersect_key(
+            $this->attributes,
+            array_flip($this->internal['floorplans'])
+        );
+        foreach ($keyIntersects as $k => $v) {
+            $captionKey = str_replace('mediaFloorPlan','mediaFloorPlanText',$k);
+            $type = 'Image';
+            if ($this->{$captionKey} == 'Floorplan') {
+                $keyIntersects[$k] = new MediaObject($v, $this->{$captionKey},$type);
+            } else {
+                unset($keyIntersects[$k]);
+            }
+        }
+
+        return  Collection::make($keyIntersects);
+    }
 
     /**
      * Get all non-empty hip properties as a collection
